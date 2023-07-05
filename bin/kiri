@@ -26,9 +26,9 @@ fi
 insert_commits_html()
 {
 	# GIT COMMITS FORMAT
-	# local   | 2021-01-22 17:21:39 | Leandro Heck | Local changes
-	# fcd81ef | 2021-01-22 17:21:39 | Leandro Heck | Initial version
-	# d20b900 | 2021-01-22 16:59:29 | Leandro Heck | Initial commit
+	# Ref | local   | 2021-01-22 17:21:39 | Leandro Heck | Local changes
+	# Ref | fcd81ef | 2021-01-22 17:21:39 | Leandro Heck | Initial version
+	# Ref | d20b900 | 2021-01-22 16:59:29 | Leandro Heck | Initial commit
 
 	local html_path="${1}"
 	local commit1_i="${2}"
@@ -46,10 +46,11 @@ insert_commits_html()
 	IFS=$'\n'
 	for commit in ${COMMITS}; do
 
-		local hash=$(echo "${commit}" | cut -d'|' -f1 | sed "s/^ //g" | sed "s/[ t]\+//g" )
-		local date=$(echo "${commit}" | cut -d'|' -f2 | cut -d' ' -f1-2 | sed "s/^ //g" )
-		local user=$(echo "${commit}" | cut -d'|' -f3 | sed "s/^ //g" )
-		local text=$(echo "${commit}" | cut -d'|' -f4 | sed "s/^ //g" )
+		local ref_name=$(echo "${commit}" | cut -d'|' -f1 | sed "s/^ //g" )
+		local hash=$(echo "${commit}" | cut -d'|' -f2 | sed "s/^ //g" | sed "s/[ t]\+//g" )
+		local date=$(echo "${commit}" | cut -d'|' -f3 | cut -d' ' -f1-2 | sed "s/^ //g" )
+		local user=$(echo "${commit}" | cut -d'|' -f4 | sed "s/^ //g" )
+		local text=$(echo "${commit}" | cut -d'|' -f5 | sed "s/^ //g" )
 
 		local kicad_pro=$(get_kicad_pro "${OUTPUT_DIR_PATH}/${hash}")
 		local kicad_pro_extension=$(get_file_extension "${kicad_pro}")
@@ -118,7 +119,7 @@ insert_commits_html()
 		i=$((i + 1))
 
 		html_new_line="&#013;"
-		tooltip="<div>Commit: ${hash}</br>Date: ${date}</br>Author: ${user}</br>Description:</br>${text}</div>"
+		tooltip="<div>Ref name: ${ref_name}</br>Commit: ${hash}</br>Date: ${date}</br>Author: ${user}</br>Description:</br>${text}</div>"
 
 		read -r -d '' commit_html <<-EOM
 		<!-- Commit ${i} -->
@@ -145,6 +146,36 @@ insert_commits_html()
 		EOM
 
 		commits_html="${commits_html}${commit_html}\n"
+
+
+
+		read -r -d '' gitgraph_script <<-EOM
+		    	// Get the graph container HTML element.
+    			const graphContainer = document.getElementById("graph-container");
+
+    			// Instantiate the graph.
+    			const gitgraph = GitgraphJS.createGitgraph(graphContainer);
+
+    			// Simulate git commands with Gitgraph API.
+    			const master = gitgraph.branch("master");
+    			master.commit("Initial commit");
+
+    			const develop = master.branch("develop");
+    			develop.commit("Add TypeScript");
+
+    			const aFeature = develop.branch("a-feature");
+    			aFeature
+    			 .commit("Make it work")
+    			 .commit("Make it right")
+    			 .commit("Make it fast");
+
+    			develop.merge(aFeature);
+    			develop.commit("Prepare v1");
+
+    			master.merge(develop).tag("v1.0.0");
+			EOM
+
+		commits_html="<div id="graph-container"></div>\n<script>${gitgraph_script}</script>\n"
 
 	done
 
@@ -1005,7 +1036,7 @@ get_git_commits()
 
 	command_end=1>&2
 
-	local cmd="git log --date=format:'%Y-%m-%d %H:%M:%S' --pretty='format:%h | %ad | %an | %s%S' -- ${files[@]}"
+	local cmd="git log --date=format:'%Y-%m-%d %H:%M:%S' --pretty='format:%d | %h | %ad | %an | %s' -- ${files[@]}"
 	if [[ "${VERBOSE}" = "1" ]] || [[ "${DEBUG}" == "1" ]]; then
 		echo -e "${LBL}Get commits command${RCO}" 1>&2
 		echo -e "   ${LYE}${cmd}${RCO}" | fmt -w "$(tput cols)" | tr "\n" "#" | sed "s/#$/\n/g" | sed 's/\#/ \\\n/g' 1>&2
