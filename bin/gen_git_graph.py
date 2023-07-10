@@ -63,9 +63,11 @@ def generate_commit_graph(repository_path: Path) -> tuple[dict, str]:
                 "branches": [],
                 "branch": "",
             }
-            graph[commit.hexsha]["body"] = commit.message.removeprefix(
-                graph[commit.hexsha]["subject"]
-            ).strip()
+            graph[commit.hexsha]["body"] = re.sub(
+                "[\r\n]+",
+                "\n",
+                commit.message.removeprefix(graph[commit.hexsha]["subject"]).strip(),
+            )
 
     # add children for each commit
     for commit in graph:
@@ -188,7 +190,7 @@ def commit_graph_to_gitgraph_js(graph: dict, initial_commit: str) -> str:
             gitgraph_js += f'const {branch_var} = {parent_branch_var}.branch("{graph[commit]["branch"]}");\n'
 
         # Create commit options for gitgraph
-        commit_options = f'{{subject: "{graph[commit]["subject"]}", body: `{graph[commit]["body"]}`, author: "{graph[commit]["author"]} <{graph[commit]["author"]}>", timestamp: "{graph[commit]["timestamp"]}", hash: "{commit}", tag: "{graph[commit]["tag"]}"}}'
+        commit_options = f'{{subject: "{graph[commit]["subject"]}", body: `{graph[commit]["body"]}`, author: "{graph[commit]["author"]} <{graph[commit]["email"]}>", timestamp: "{graph[commit]["timestamp"]}", hash: "{commit}", tag: "{graph[commit]["tag"]}"}}'
 
         # Create the commit
         if len(graph[commit]["parents"]) <= 1:
