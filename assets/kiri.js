@@ -35,8 +35,14 @@ function commit_click(hash) {
 }
 
 function show_commit_details(text){
-    document.getElementById('commit_message').style.display = 'block';
-    document.getElementById('commit_message').body = text
+    var elem = document.getElementById('commit_message')
+    elem.style.display = 'block';
+    elem.innerHTML = text
+    var e = window.event
+        x = e.clientX,
+        y = e.clientY;
+    elem.style.top = (y) + 'px';
+    elem.style.left = (x) + 'px';
 }
 
 function hide_commit_details(){
