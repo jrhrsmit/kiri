@@ -5,8 +5,8 @@ var commit2;
 
 var commits_list = window.commit_array;
 
-var old_view = "show_pcb";
-var current_view = "show_sch";
+var old_view;
+var current_view;
 
 panZoom_instance = null;
 lastEventListener = null;
