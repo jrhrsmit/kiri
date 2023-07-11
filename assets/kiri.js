@@ -33,15 +33,12 @@ var is_fullscreen = false;
 latest_clicked_commit_id = 1
 
 function commit_click(hash) {
-    if (hash == commit1) {
-        latest_clicked_commit_id = 1
-    } else if (hash == commit2) {
-        latest_clicked_commit_id = 2
-    }
     if (latest_clicked_commit_id == 1) {
         commit2 = hash
+        latest_clicked_commit_id = 2
     } else {
         commit1 = hash
+        latest_clicked_commit_id = 1
     }
 
     update_commits()
