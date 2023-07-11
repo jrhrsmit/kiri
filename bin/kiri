@@ -137,9 +137,6 @@ insert_commits_html()
 	# gitgraph_js+="\ncommit_click_$commit_hash_1()\ncommit_click_$commit_hash_2()\n"
 	# append a function that provides a list of commits
 
-	local all_commits=$(git log --date=format:'%Y-%m-%d %H:%M:%S' --pretty="format:'%h'," --all)
-	local commit_array=$(echo "$all_commits" | tr '\n' ' ')
-	gitgraph_js+="\nset_commits_list([$commit_array]);\n"
 	commits_html="<div id=\"commit_message\"></div><div id=\"gitGraphContainer\"></div>\n<script>$gitgraph_js</script>\n"
 
 	indent=$(printf '\t%.0s' {1..8})
@@ -149,6 +146,14 @@ insert_commits_html()
 
 	line_no=$(($(grep -n "FILL_COMMITS_HERE" "${html_path}" | cut -d":" -f1) + 1))
 	sed -i "${line_no} e cat \"${OUTPUT_DIR_PATH}/commits.html\"" "${html_path}"
+
+	local all_commits=$(git log --date=format:'%Y-%m-%d %H:%M:%S' --pretty="format:'%h'," --all)
+	local commit_array=$(echo "$all_commits" | tr '\n' ' ')
+	#gitgraph_js+="\nset_commits_list([$commit_array]);\n"
+	js_globals="window.commit_array = [$commit_array];\n"
+	js_globals="$(echo -e ${js_globals} | sed "s|^|${indent}|g" | sed "s|@|-|g" | tee "${OUTPUT_DIR_PATH}/globals.js")"
+	line_no=$(($(grep -n "FILL_GLOBAL_JS_VARS_HERE" "${html_path}" | cut -d":" -f1) + 1))
+	sed -i "${line_no} e cat \"${OUTPUT_DIR_PATH}/globals.js\"" "${html_path}"
 }
 
 insert_pages_html()

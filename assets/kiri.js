@@ -3,10 +3,10 @@
 var commit1;
 var commit2;
 
-var commits_list = [];
+var commits_list = window.commit_array;
 
-var old_view;
-var current_view;
+var old_view = "show_pcb";
+var current_view = "show_sch";
 
 panZoom_instance = null;
 lastEventListener = null;
@@ -1010,15 +1010,15 @@ function select_initial_commits()
 
     if (commits.length >= 2)
     {
-        commit1 = commits[0].value;
-        commit2 = commits[1].value;
-        commits[0].checked = true;
-        commits[1].checked = true;
+        commit1 = commits[0];
+        commit2 = commits[1];
+        //commits[0].checked = true;
+        //commits[1].checked = true;
     }
     else if (commits.length == 1)
     {
-        commit1 = commits[0].value;
-        commits[0].checked = true;
+        commit1 = commits[0];
+        //commits[0].checked = true;
     }
 }
 
