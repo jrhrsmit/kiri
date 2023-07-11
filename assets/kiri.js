@@ -3,15 +3,18 @@
 var commit1;
 var commit2;
 
+var commits_list = [];
+
 var old_view;
 var current_view;
 
-var panZoom_instance = null;
-var lastEventListener = null;
-var lastEmbed = null;
+panZoom_instance = null;
+lastEventListener = null;
+lastEmbed = null;
 
-var current_selected_page = 0;
-var previous_selected_page = -1;
+current_selected_page = 0;
+previous_selected_page = -1;
+
 
 sch_current_zoom = null;
 sch_old_zoom = null;
@@ -22,13 +25,17 @@ pcb_old_zoom = null;
 pcb_current_pan = null;
 
 // Variables updated by Kiri
-var selected_view = "schematic";
+selected_view = "schematic";
 
-var is_fullscreen = false;
+is_fullscreen = false;
 
 // =======================================
 // HANDLE SHORTCUTS
 // =======================================
+
+function set_commits_list(commits) {
+    commits_list = commits
+}
 
 latest_clicked_commit_id = 1
 
@@ -998,7 +1005,8 @@ function update_layer() {
 
 function select_initial_commits()
 {
-    var commits = $("#commits_form input:checkbox[name='commit']");
+    //var commits = $("#commits_form input:checkbox[name='commit']");
+    var commits = commits_list;
 
     if (commits.length >= 2)
     {
