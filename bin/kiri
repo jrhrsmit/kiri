@@ -25,16 +25,11 @@ fi
 
 insert_commits_html()
 {
-	# GIT COMMITS FORMAT
-	# Ref | local   | 2021-01-22 17:21:39 | Leandro Heck | Local changes
-	# Ref | fcd81ef | 2021-01-22 17:21:39 | Leandro Heck | Initial version
-	# Ref | d20b900 | 2021-01-22 16:59:29 | Leandro Heck | Initial commit
-
 	local html_path="${1}"
 	local commit1_i="${2}"
 	local commit2_i="${3}"
 
-	local commit_html
+	#local commit_html
 	local commits_html
 
 	local empty_img='<span class="iconify" style="padding-left: 0px; padding-right: 0px; width: 14px; height: 14px; color: #ff0000;" data-inline="false"; data-icon="bx:bx-x"></span>'
@@ -44,21 +39,30 @@ insert_commits_html()
 
 	local i=0
 	IFS=$'\n'
+
+	local kiri_bin_dir=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
+	local python_script="$kiri_bin_dir"/gen_git_graph.py
+
+	# generate JS for gitgraph
+	local gitgraph_output_file=$(mktemp)
+	python3 $python_script ${REPO_ABSOLUTE_PATH} ${gitgraph_output_file}
+
 	for commit in ${COMMITS}; do
 
-		local ref_name=$(echo "${commit}" | cut -d'|' -f1 | sed "s/^ //g" )
-		local hash=$(echo "${commit}" | cut -d'|' -f2 | sed "s/^ //g" | sed "s/[ t]\+//g" )
-		local date=$(echo "${commit}" | cut -d'|' -f3 | cut -d' ' -f1-2 | sed "s/^ //g" )
-		local user=$(echo "${commit}" | cut -d'|' -f4 | sed "s/^ //g" )
-		local text=$(echo "${commit}" | cut -d'|' -f5 | sed "s/^ //g" )
+		#local parents=$(echo "${commit}" | cut -d'|' -f1 | sed "s/^ //g" )
+		#local ref_name=$(echo "${commit}" | cut -d'|' -f2 | sed "s/^ //g" )
+		local hash=$(echo "${commit}" | cut -d'|' -f3 | sed "s/^ //g" | sed "s/[ t]\+//g" )
+		#local date=$(echo "${commit}" | cut -d'|' -f4 | cut -d' ' -f1-2 | sed "s/^ //g" )
+		#local user=$(echo "${commit}" | cut -d'|' -f5 | sed "s/^ //g" )
+		#local text=$(echo "${commit}" | cut -d'|' -f6 | sed "s/^ //g" )
 
-		local kicad_pro=$(get_kicad_pro "${OUTPUT_DIR_PATH}/${hash}")
-		local kicad_pro_extension=$(get_file_extension "${kicad_pro}")
-		local kicad_proj_name=$(get_file_without_extention "${kicad_pro}")
-		local kicad_sch=$(get_kicad_sch "${KICAD_PROJ_ABSOLUTE_PATH}" "${kicad_proj_name}" "${kicad_pro_extension}")
-		local kicad_pcb=$(get_kicad_pcb "${KICAD_PROJ_ABSOLUTE_PATH}" "${kicad_proj_name}")
-		local kicad_sch_pages=$(get_kicad_sch_pages "${KICAD_PROJ_ABSOLUTE_PATH}/${kicad_sch}")
-		local kicad_cache_lib=$(get_kicad_cache_lib "${KICAD_PROJ_ABSOLUTE_PATH}" "${kicad_proj_name}")
+		#local kicad_pro=$(get_kicad_pro "${OUTPUT_DIR_PATH}/${hash}")
+		#local kicad_pro_extension=$(get_file_extension "${kicad_pro}")
+		#local kicad_proj_name=$(get_file_without_extention "${kicad_pro}")
+		#  local kicad_sch=$(get_kicad_sch "${KICAD_PROJ_ABSOLUTE_PATH}" "${kicad_proj_name}" "${kicad_pro_extension}")
+		#  local kicad_pcb=$(get_kicad_pcb "${KICAD_PROJ_ABSOLUTE_PATH}" "${kicad_proj_name}")
+		#  local kicad_sch_pages=$(get_kicad_sch_pages "${KICAD_PROJ_ABSOLUTE_PATH}/${kicad_sch}")
+		#local kicad_cache_lib=$(get_kicad_cache_lib "${KICAD_PROJ_ABSOLUTE_PATH}" "${kicad_proj_name}")
 		# show_project_files "${OUTPUT_DIR_PATH}/${hash}" "${kicad_pro}" "${kicad_sch}" "${kicad_pcb}" "${kicad_cache_lib}"
 
 		if [[ "${hash}" != "_local_" ]]; then
@@ -86,8 +90,10 @@ insert_commits_html()
 				txt_icon="${empty_img}"
 			fi
 
-			hash_label="${hash}"
-			class="text-info"
+			# hash_label="${hash}"
+			# class="text-info"
+
+			sed -i "s/\(subject: \"\)\(.*\"${hash}\"\)\"/\1$sch_icon $pcb_icon $txt_icon \2/" $gitgraph_output_file
 
 		else
 
@@ -112,72 +118,18 @@ insert_commits_html()
 				txt_icon="${empty_img}"
 			fi
 
-			hash_label="${hash}"
-			class="text-warning"
+			#hash_label="${hash}"
+			#class="text-warning"
+
 		fi
 
+		# local commit="$commit | $sch_icon $pcb_icon $txt_icon | $class"
+
 		i=$((i + 1))
-
-		html_new_line="&#013;"
-		tooltip="<div>Ref name: ${ref_name}</br>Commit: ${hash}</br>Date: ${date}</br>Author: ${user}</br>Description:</br>${text}</div>"
-
-		read -r -d '' commit_html <<-EOM
-		<!-- Commit ${i} -->
-		<input class="chkGroup" type="checkbox" id="${hash}" name="commit" value="${hash}" onchange="update_commits()">
-		<label class="text-sm-left list-group-item" style="display: block; width: 445px; margin-left: 0px;" for="${hash}">
-		    <table data-toggle="tooltip" title="${tooltip}">
-		        <tr>
-		            <td rowspan=2 style="vertical-align: top; width: 1.8em;">
-		                <svg viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg" width="15" height="15">
-		                    <path d="M7.5 10.5a3 3 0 010-6m0 6a3 3 0 000-6m0 6V15m0-10.5V0" stroke="currentColor"></path>
-		                </svg>
-		            </td>
-		            <td style="white-space:nowrap; overflow: hidden; text-overflow: ellipsis;">
-		                <span class="text-muted"> $(printf "%02d" ${i}) | </span> <span class="text-success font-weight-normal">${hash_label}</span> <span class="text-muted"> | </span> ${sch_icon} ${pcb_icon} ${txt_icon} <span class="text-muted font-weight-normal"> | ${date} | ${user}</span>
-		            </td>
-		        </tr>
-		        <tr>
-		            <td>
-		                <em class="${class}" style=" line-height: 0.7;">${text}</em>
-		            </td>
-		        </tr>
-		    </table>
-		</label>
-		EOM
-
-		commits_html="${commits_html}${commit_html}\n"
-
-
-
-		read -r -d '' gitgraph_script <<-EOM
-		    	// Get the graph container HTML element.
-    			const graphContainer = document.getElementById("graph-container");
-
-    			// Instantiate the graph.
-    			const gitgraph = GitgraphJS.createGitgraph(graphContainer);
-
-    			// Simulate git commands with Gitgraph API.
-    			const master = gitgraph.branch("master");
-    			master.commit("Initial commit");
-
-    			const develop = master.branch("develop");
-    			develop.commit("Add TypeScript");
-
-    			const aFeature = develop.branch("a-feature");
-    			aFeature
-    			 .commit("Make it work")
-    			 .commit("Make it right")
-    			 .commit("Make it fast");
-
-    			develop.merge(aFeature);
-    			develop.commit("Prepare v1");
-
-    			master.merge(develop).tag("v1.0.0");
-			EOM
-
-		commits_html="<div id="graph-container"></div>\n<script>${gitgraph_script}</script>\n"
-
 	done
+
+	gitgraph_js=$(cat "$gitgraph_output_file")
+	commits_html="<div id=\"graph-container\"></div>\n<script>$gitgraph_js</script>\n"
 
 	indent=$(printf '\t%.0s' {1..8})
 
@@ -1036,7 +988,8 @@ get_git_commits()
 
 	command_end=1>&2
 
-	local cmd="git log --date=format:'%Y-%m-%d %H:%M:%S' --pretty='format:%d | %h | %ad | %an | %s' -- ${files[@]}"
+	#local cmd="git log --date=format:'%Y-%m-%d %H:%M:%S' --pretty='format:%d | %p | %h | %ad | %an | %s' -- ${files[@]}"
+	local cmd="git log --date=format:'%Y-%m-%d %H:%M:%S' --pretty='format:%d | %p | %h | %ad | %an | %s' --reverse --all"
 	if [[ "${VERBOSE}" = "1" ]] || [[ "${DEBUG}" == "1" ]]; then
 		echo -e "${LBL}Get commits command${RCO}" 1>&2
 		echo -e "   ${LYE}${cmd}${RCO}" | fmt -w "$(tput cols)" | tr "\n" "#" | sed "s/#$/\n/g" | sed 's/\#/ \\\n/g' 1>&2
