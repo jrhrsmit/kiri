@@ -129,7 +129,7 @@ insert_commits_html()
 	done
 
 	gitgraph_js=$(cat "$gitgraph_output_file")
-	commits_html="<div id=\"graph-container\"></div>\n<script>$gitgraph_js</script>\n"
+	commits_html="<div id=\"gitGraphContainer\"></div>\n<script>$gitgraph_js</script>\n"
 
 	indent=$(printf '\t%.0s' {1..8})
 
