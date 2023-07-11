@@ -36,7 +36,7 @@ insert_commits_html()
 	local   sch_img='<span class="iconify" style="padding-left: 0px; padding-right: 0px; width: 14px; height: 14px; color: #A6E22E;" data-inline="false"; data-icon="carbon:schematics"></span>'
 	local   pcb_img='<span class="iconify" style="padding-left: 0px; padding-right: 0px; width: 14px; height: 14px; color: #F92672;" data-inline="false"; data-icon="codicon:circuit-board"></span>'
 	local   txt_img='<span class="iconify" style="padding-left: 0px; padding-right: 0px; width: 14px; height: 14px; color: #888888;" data-inline="false"; data-icon="bi:file-earmark-text"></span>'
-	
+
 	local empty_img=" X "
 	local   sch_img="SCH"
 	local   pcb_img="PCB"
@@ -54,12 +54,10 @@ insert_commits_html()
 
 	for commit in ${COMMITS}; do
 
-		#local parents=$(echo "${commit}" | cut -d'|' -f1 | sed "s/^ //g" )
-		#local ref_name=$(echo "${commit}" | cut -d'|' -f2 | sed "s/^ //g" )
-		local hash=$(echo "${commit}" | cut -d'|' -f3 | sed "s/^ //g" | sed "s/[ t]\+//g" )
-		#local date=$(echo "${commit}" | cut -d'|' -f4 | cut -d' ' -f1-2 | sed "s/^ //g" )
-		#local user=$(echo "${commit}" | cut -d'|' -f5 | sed "s/^ //g" )
-		#local text=$(echo "${commit}" | cut -d'|' -f6 | sed "s/^ //g" )
+		local hash=$(echo "${commit}" | cut -d'|' -f1 | sed "s/^ //g" | sed "s/[ t]\+//g" )
+		#local date=$(echo "${commit}" | cut -d'|' -f2 | cut -d' ' -f1-2 | sed "s/^ //g" )
+		#local user=$(echo "${commit}" | cut -d'|' -f3 | sed "s/^ //g" )
+		#local text=$(echo "${commit}" | cut -d'|' -f4 | sed "s/^ //g" )
 
 		#local kicad_pro=$(get_kicad_pro "${OUTPUT_DIR_PATH}/${hash}")
 		#local kicad_pro_extension=$(get_file_extension "${kicad_pro}")
@@ -994,7 +992,8 @@ get_git_commits()
 	command_end=1>&2
 
 	#local cmd="git log --date=format:'%Y-%m-%d %H:%M:%S' --pretty='format:%d | %p | %h | %ad | %an | %s' -- ${files[@]}"
-	local cmd="git log --date=format:'%Y-%m-%d %H:%M:%S' --pretty='format:%d | %p | %h | %ad | %an | %s' --reverse --all"
+	#local cmd="git log --date=format:'%Y-%m-%d %H:%M:%S' --pretty='format:%d | %p | %h | %ad | %an | %s' --all"
+	local cmd="git log --date=format:'%Y-%m-%d %H:%M:%S' --pretty='format:%h | %ad | %an | %s' --all"
 	if [[ "${VERBOSE}" = "1" ]] || [[ "${DEBUG}" == "1" ]]; then
 		echo -e "${LBL}Get commits command${RCO}" 1>&2
 		echo -e "   ${LYE}${cmd}${RCO}" | fmt -w "$(tput cols)" | tr "\n" "#" | sed "s/#$/\n/g" | sed 's/\#/ \\\n/g' 1>&2
@@ -1837,7 +1836,7 @@ generate_diffs()
 	n_comparisons=$(python3 -c "import math; print((int)(math.factorial(${n_hashes}) / (math.factorial(2) * math.factorial(${n_hashes} - 2))))")
 
 	# Check for local changes
-	echo -e "\n${LBL}Artiffacts Summary${RCO}"
+	echo -e "\n${LBL}Artifacts Summary${RCO}"
 	if echo "${COMMITS}" | cut -d' '  -f1 | grep "_local_" -q; then
 		echo "$((n_hashes-1)) commits ${BTE}plus local changes${RCO} ($((n_comparisons)) comparisons)"
 	else

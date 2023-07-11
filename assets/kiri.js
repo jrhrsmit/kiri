@@ -451,9 +451,9 @@ function update_commits() {
     //     return;
     // }
 
-    // Update selected commits
-    commit1 = hashes[0].replace(/\s+/g, '');
-    commit2 = hashes[1].replace(/\s+/g, '');
+    // // Update selected commits
+    // commit1 = hashes[0].replace(/\s+/g, '');
+    // commit2 = hashes[1].replace(/\s+/g, '');
 
     console.log("commit1:", commit1);
     console.log("commit2:", commit2);
