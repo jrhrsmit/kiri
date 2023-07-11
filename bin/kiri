@@ -131,8 +131,13 @@ insert_commits_html()
 		i=$((i + 1))
 	done
 
+	# get generated git graph
 	gitgraph_js=$(cat "$gitgraph_output_file")
+	# append a simulated click to select the first two commits
 	gitgraph_js+="\ncommit_click_$commit_hash_1()\ncommit_click_$commit_hash_2()\n"
+	# append a function that provides a list of commits
+	local commit_array=$(echo $COMMITS | sed 's/^\([a-f0-9]*\) .*$/"\1",/' | tr '\n' ' ')
+	gitgraph_js+="function get_commits(){\n\tvar commits=[$commit_array];\n\treturn commits\n}\n"
 	commits_html="<div id=\"commit_message\"></div><div id=\"gitGraphContainer\"></div>\n<script>$gitgraph_js</script>\n"
 
 	indent=$(printf '\t%.0s' {1..8})
