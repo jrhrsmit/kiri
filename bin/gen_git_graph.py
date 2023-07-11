@@ -1,8 +1,6 @@
 import typer
 from pathlib import Path
 import re
-import subprocess
-from datetime import datetime
 import git
 import logging
 from rich.logging import RichHandler
