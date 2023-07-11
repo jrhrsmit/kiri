@@ -53,6 +53,7 @@ def generate_commit_graph(repository_path: Path) -> tuple[dict, str]:
             graph[commit.hexsha] = {
                 "parents": [p.hexsha for p in commit.parents],
                 "subject": commit.message.strip().splitlines()[0],
+                "message": commit.message.strip(),
                 "author": commit.author.name,
                 "email": commit.author.email,
                 "timestamp": commit.committed_datetime,
@@ -189,10 +190,12 @@ def commit_graph_to_gitgraph_js(graph: dict, initial_commit: str) -> str:
 
         # Create commit options for gitgraph
         # commit_options = f'{{subject: "{graph[commit]["subject"]}", body: `{graph[commit]["body"]}`, author: "{graph[commit]["author"]} <{graph[commit]["email"]}>", timestamp: "{graph[commit]["timestamp"]}", hash: "{commit}", tag: "{graph[commit]["tag"]}"}}'
+        gitgraph_js += f'function show_commit_details_{commit}(){{show_commit_details(`{graph[commit]["message"]}`)}}\n'
+        gitgraph_js += f'function commit_click_{commit}(){{commit_click("{commit}")}}\n'
         commit_options = f"""{{subject: "{graph[commit]["subject"]}",
-                            onMouseOver: show_commit_details(`{graph[commit]["body"]}`),
-                            onMouseOut: hide_commit_details(),
-                            onClick: commit_click("{commit}"),
+                            onMouseOver: show_commit_details_{commit},
+                            onMouseOut: hide_commit_details,
+                            onClick: commit_click_{commit},
                             author: "{graph[commit]["author"]} <{graph[commit]["email"]}>",
                             timestamp: "{graph[commit]["timestamp"]}",
                             hash: "{commit}", tag: "{graph[commit]["tag"]}"}}"""
