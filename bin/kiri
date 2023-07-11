@@ -36,6 +36,11 @@ insert_commits_html()
 	local   sch_img='<span class="iconify" style="padding-left: 0px; padding-right: 0px; width: 14px; height: 14px; color: #A6E22E;" data-inline="false"; data-icon="carbon:schematics"></span>'
 	local   pcb_img='<span class="iconify" style="padding-left: 0px; padding-right: 0px; width: 14px; height: 14px; color: #F92672;" data-inline="false"; data-icon="codicon:circuit-board"></span>'
 	local   txt_img='<span class="iconify" style="padding-left: 0px; padding-right: 0px; width: 14px; height: 14px; color: #888888;" data-inline="false"; data-icon="bi:file-earmark-text"></span>'
+	
+	local empty_img=" X "
+	local   sch_img="SCH"
+	local   pcb_img="PCB"
+	local   txt_img="TXT"
 
 	local i=0
 	IFS=$'\n'
@@ -93,7 +98,7 @@ insert_commits_html()
 			# hash_label="${hash}"
 			# class="text-info"
 
-			sed -i "s/\(subject: \"\)\(.*\"${hash}\"\)\"/\1$sch_icon $pcb_icon $txt_icon \2/" $gitgraph_output_file
+			sed -i "s#\(subject: \"\)\(.*\"$hash\"\)#\1$sch_icon $pcb_icon $txt_icon \2#" "$gitgraph_output_file"
 
 		else
 
