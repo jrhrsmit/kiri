@@ -30,6 +30,19 @@ var is_fullscreen = false;
 // HANDLE SHORTCUTS
 // =======================================
 
+function commit_click(hash) {
+    alert(hash)
+}
+
+function show_commit_details(text){
+    document.getElementById('commit_message').style.display = 'block';
+    document.getElementById('commit_message').body = text
+}
+
+function hide_commit_details(){
+    document.getElementById('commit_message').style.display = 'none';
+}
+
 function select_next_2_commits() {
     commits = $("#commits_form input:checkbox[name='commit']");
 
