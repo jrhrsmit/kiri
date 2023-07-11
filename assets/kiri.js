@@ -1,5 +1,3 @@
-import { createGitgraph } from "@gitgraph/js";
-
 // jshint esversion:6
 
 var commit1;
