@@ -30,8 +30,21 @@ var is_fullscreen = false;
 // HANDLE SHORTCUTS
 // =======================================
 
+latest_clicked_commit_id = 1
+
 function commit_click(hash) {
-    alert(hash)
+    if (hash == commit1) {
+        latest_clicked_commit_id = 1
+    } else if (hash == commit2) {
+        latest_clicked_commit_id = 2
+    }
+    if (latest_clicked_commit_id == 1) {
+        commit2 = hash
+    } else {
+        commit1 = hash
+    }
+
+    update_commits()
 }
 
 function show_commit_details(text){
@@ -422,20 +435,21 @@ function update_commits() {
 
     console.log("================================================================================");
 
-    var commits = $("#commits_form input:checkbox[name='commit']");
-    var hashes = [];
+    // TODO: implement this correctly
+    // var commits = $("#commits_form input:checkbox[name='commit']");
+    // var hashes = [];
 
-    for (var i = 0; i < commits.length; i++) {
-        if (commits[i].checked) {
-            var value = commits[i].value;
-            hashes.push(value);
-        }
-    }
+    // for (var i = 0; i < commits.length; i++) {
+    //     if (commits[i].checked) {
+    //         var value = commits[i].value;
+    //         hashes.push(value);
+    //     }
+    // }
 
-    // It needs 2 items selected to do something
-    if (hashes.length < 2) {
-        return;
-    }
+    // // It needs 2 items selected to do something
+    // if (hashes.length < 2) {
+    //     return;
+    // }
 
     // Update selected commits
     commit1 = hashes[0].replace(/\s+/g, '');
