@@ -26,8 +26,8 @@ fi
 insert_commits_html()
 {
 	local html_path="${1}"
-	local commit1_i="${2}"
-	local commit2_i="${3}"
+	local commit_hash_1="${2}"
+	local commit_hash_2="${3}"
 
 	#local commit_html
 	local commits_html
@@ -132,6 +132,7 @@ insert_commits_html()
 	done
 
 	gitgraph_js=$(cat "$gitgraph_output_file")
+	gitgraph_js+="\ncommit_click_$commit_hash_1()\ncommit_click_$commit_hash_2()\n"
 	commits_html="<div id=\"commit_message\"></div><div id=\"gitGraphContainer\"></div>\n<script>$gitgraph_js</script>\n"
 
 	indent=$(printf '\t%.0s' {1..8})
@@ -987,12 +988,11 @@ set_default_html_view()
 get_git_commits()
 {
 	local files=("${@}")
-	local current_git_branch=$(git rev-parse --abbrev-ref HEAD)
+	#local current_git_branch=$(git rev-parse --abbrev-ref HEAD)
 
 	command_end=1>&2
 
 	#local cmd="git log --date=format:'%Y-%m-%d %H:%M:%S' --pretty='format:%d | %p | %h | %ad | %an | %s' -- ${files[@]}"
-	#local cmd="git log --date=format:'%Y-%m-%d %H:%M:%S' --pretty='format:%d | %p | %h | %ad | %an | %s' --all"
 	local cmd="git log --date=format:'%Y-%m-%d %H:%M:%S' --pretty='format:%h | %ad | %an | %s' --all"
 	if [[ "${VERBOSE}" = "1" ]] || [[ "${DEBUG}" == "1" ]]; then
 		echo -e "${LBL}Get commits command${RCO}" 1>&2
@@ -1865,7 +1865,9 @@ generate_diffs()
 					local padding=0
 					local total="/${n_comparisons}"
 				else
-					local padding=$(($(python3 -c "import math; print(int(math.log10(${n_comparisons}))+1)")))
+					local x
+					x=$(python3 -c "import math; print(int(math.log10(${n_comparisons}))+1)")
+					local padding=$((x))
 					local total=""
 				fi
 
@@ -2005,13 +2007,14 @@ build_main_html()
 	# Select initial commits
 	local commit_hash_1=$(echo "${COMMITS}" | head -n$((commit1_i + 1)) | tail -n1 | cut -d" " -f1)
 	local commit_hash_2=$(echo "${COMMITS}" | head -n$((commit2_i + 1)) | tail -n1 | cut -d" " -f1)
+	echo "Starting with $commit_hash_1 $commit_hash_2"
 
 	local sheets=$(create_unified_sheets_list)
 	local layers=$(create_unified_layers_list)
 
 	# Insert commits list
 	echo "- Adding list of commits"
-	insert_commits_html "${WEB_DIR_PATH}/${main_html}" "${commit1_i}" "${commit2_i}"
+	insert_commits_html "${WEB_DIR_PATH}/${main_html}" "${commit_hash_1}" "${commit_hash_2}"
 
 	# Insert pages list
 	echo "- Adding list of pages"
