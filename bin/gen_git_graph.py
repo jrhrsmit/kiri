@@ -248,7 +248,7 @@ def commit_graph_to_gitgraph_js(graph: dict, initial_commit: str) -> str:
     return gitgraph_js
 
 
-def main(git_dir: Path):
+def main(git_dir: Path, output_file: typer.FileTextWrite):
     # Generate the commit graph
     graph, initial_commit = generate_commit_graph(git_dir)
     hash_len = 7
@@ -256,162 +256,9 @@ def main(git_dir: Path):
     initial_commit = initial_commit[0:hash_len]
     js = commit_graph_to_gitgraph_js(graph, initial_commit)
 
-    print(js)
+    output_file.write(js)
 
     exit()
-
-    # GIT COMMITS FORMAT
-    # Parent commit(s) | Ref | d20b900 | 2021-01-22 16:59:29 | Leandro Heck | Initial commit
-    # Parent commit(s) | Ref | fcd81ef | 2021-01-22 17:21:39 | Leandro Heck | Initial version
-    # Parent commit(s) | Ref | local   | 2021-01-22 17:21:39 | Leandro Heck | Local changes
-    git_graph = ""
-
-    # Get the list of all commits in the repository
-    commit_hashes = (
-        subprocess.check_output(
-            ["git", "-C", git_dir, "rev-list", "--all", "--reverse"]
-        )
-        .decode()
-        .splitlines()
-    )
-
-    master_branch = (
-        subprocess.check_output(
-            ["git", "symbolic-ref", "refs/remotes/origin/HEAD", "--short"]
-        )
-        .decode()
-        .strip("\r\n ")
-        .split("/")[-1]
-    )
-
-    branches_dict = {}
-    branches_dict[master_branch] = {
-        "var": master_branch.replace("/", "_").replace(".", "_")
-    }
-    git_graph_code = f'const {branches_dict[master_branch]["var"]} = gitgraph.branch("{master_branch}");\n'
-
-    # Iterate through each commit
-    for commit_hash in commit_hashes:
-        # Get the branch names that contain the commit
-        branches = (
-            subprocess.check_output(
-                ["git", "-C", git_dir, "branch", "--contains", commit_hash]
-            )
-            .decode()
-            .splitlines()
-        )
-
-        # skip if the commit has no branch
-        if not branches:
-            continue
-
-        for i, branch in enumerate(branches):
-            branches[i] = branch.strip(" *\n\r")
-
-        details = (
-            subprocess.check_output(
-                [
-                    "git",
-                    "-C",
-                    git_dir,
-                    "show",
-                    "--date=format:'%Y-%m-%d %H:%M:%S'",
-                    "--pretty='%h|%ad|%an|%s|%D'",
-                    "-s",
-                    commit_hash,
-                ]
-            )
-            .decode()
-            .strip()
-            .split("|")
-        )
-
-        commit_hash_short = details[0].strip()
-        timestamp = details[1].strip()
-        author = details[2].strip()
-        commit_msg = details[3].strip()
-        try:
-            tag = (
-                re.search(r"tag: [0-9a-zA-Z._\-\/]+", details[4])
-                .group()
-                .replace("tag: ", "")
-            )
-            tag_str = f'.tag("{tag}")'
-        except:
-            tag_str = ""
-
-        if master_branch in branches:
-            git_graph += f'{branches_dict[master_branch]["var"]}.commit("{commit_msg}"){tag_str};\n'
-            for branch in branches:
-                if branch == master_branch:
-                    continue
-                branches_dict[branch]["parent branch"] = master_branch
-        # elif any(map(lambda v: v in branches, branches_dict)):
-        else:
-            for branch in branches:
-                git_graph_code = f'const {branches_dict[master_branch]["var"]} = gitgraph.branch("{master_branch}");\n'
-
-        for branch in branches:
-            branches_dict[branch] = {"var": branch.replace("/", "_").replace(".", "_")}
-            var_name = branch.replace("/", "_").replace(".", "_")
-
-        # Format the output with the commit hash and branch names
-        # output = f'{commit_hash} {tag_str} {" ".join(branches)} {details}'
-
-        # log.debug or process the output as desired
-        # log.debug(output)
-
-    exit()
-
-    for i, commit_line in enumerate(commits_file.readlines()):
-        commit_parts = commit_line.split("|")
-
-        ref = commit_parts[0].strip()
-        parents = commit_parts[1].strip(" ").split(" ")
-
-        num_branches = len(branches)
-
-        new_branch_num = num_branches
-        new_branch_name = f"unknown_{new_branch_num}"
-
-        if "(tag:" in ref:
-            tag = ref.replace("(tag:", "").strip(" )").split(" ")[0]
-            tag_str = f'.tag("{tag}")'
-            log.debug(f"tag: {tag}, ref: {ref}")
-        else:
-            tag_str = ""
-
-        if len(parents) == 1 and not parents[0]:
-            # no parents, initial commit?
-            branches[commit_hash] = {
-                "branch number": new_branch_num,
-                "branch name": new_branch_name,
-            }
-            if i == 0:
-                git_graph += f'const {branches[commit_hash]["branch name"]} = gitgraph.branch("{branches[commit_hash]["branch name"]}"){tag_str};\n'
-                git_graph += f'{branches[commit_hash]["branch name"]}.commit("{commit_msg}"){tag_str};\n'
-            else:
-                log.debug(f"Stray commit: {commit_hash}")
-
-        elif len(parents) == 1:
-            # copy branch number and name from parent
-            branches[commit_hash] = {
-                "branch number": branches[parents[0]]["branch number"],
-                "branch name": branches[parents[0]]["branch name"],
-            }
-            git_graph += f'{branches[commit_hash]["branch name"]}.commit("{commit_msg}"){tag_str};\n'
-        elif len(parents) == 2:
-            # merge commit
-            # copy branch number and name from parent
-            branches[commit_hash] = {
-                "branch number": branches[parents[0]]["branch number"],
-                "branch name": branches[parents[0]]["branch name"],
-            }
-            git_graph += f'{branches[commit_hash]["branch name"]}.merge("{branches[parents[1]]["branch name"]}"){tag_str};\n'
-        else:
-            log.debug(f"Commit with multiple parents? {commit_hash}: {parents}")
-
-    log.debug(git_graph)
 
 
 if __name__ == "__main__":
