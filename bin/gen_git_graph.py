@@ -226,7 +226,7 @@ def commit_graph_to_gitgraph_js(graph: dict, initial_commit: str) -> str:
             }}
             """
         gitgraph_js += f"""function commit_click_{commit}(){{
-                commit_click("{commit}")
+                commit_click("{commit}", gitgraph)
             }}
             """
         commit_options = f"""{{subject: "{graph[commit]["subject"]}",
