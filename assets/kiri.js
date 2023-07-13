@@ -37,15 +37,30 @@ function set_commits_list(commits) {
     commits_list = commits
 }
 
-latest_clicked_commit_id = 1
-
 function commit_click(hash) {
-    if (latest_clicked_commit_id == 1) {
-        commit2 = hash
-        latest_clicked_commit_id = 2
+    hash_idx=0;
+    commit1_idx=0;
+    commit1_idx=0;
+    for (let i = 0; i < gitgraph._graph.commits.length; i++) {
+        if (gitgraph._graph.commits[i].hash == hash) {
+            hash_idx = i;
+        }
+        if (gitgraph._graph.commits[i].hash == commit1) {
+            commit1_idx = i;
+        }
+        if (gitgraph._graph.commits[i].hash == commit2) {
+            commit2_idx = i;
+        }
+    }
+
+    if (hash_idx <= commit2_idx) {
+        commit2 = hash;
+    } else if (hash_idx >= commit1_idx) {
+        commit1 = hash;
+    } else if (hash_idx - commit2_idx < commit1_idx - hash_idx) {
+        commit2 = hash;
     } else {
-        commit1 = hash
-        latest_clicked_commit_id = 1
+        commit1 = hash;
     }
 
     for (let i = 0; i < gitgraph._graph.commits.length; i++) {
@@ -56,11 +71,12 @@ function commit_click(hash) {
             gitgraph._graph.commits[i].style.message.color = "#F00";
             gitgraph._graph.commits[i].style.dot.color = "#F00";
         } else {
-            gitgraph._graph.commits[i].style.message.color = "";
+            gitgraph._graph.commits[i].style.message.color = "#fff";
             gitgraph._graph.commits[i].style.dot.color = "";
         }
     }
     gitgraph._graph.next()
+
 
     update_commits()
 }
