@@ -145,8 +145,38 @@ def select_next_child(graph: dict, children_remaining: list) -> tuple[list, str]
 
 
 def commit_graph_to_gitgraph_js(graph: dict, initial_commit: str) -> str:
-    gitgraph_js = """const gitgraph = GitgraphJS.createGitgraph(document.getElementById("gitGraphContainer"), {
+    template = """\n
+        gitgraph_template = GitgraphJS.templateExtend(GitgraphJS.TemplateName.Metro,\n
+        {\n
+            colors: ["#fff", "#aaa", "#eee", "#999", "#ddd", "#888", "#ccc", "#777"],\n
+            tag: {\n
+                color: "#000",\n
+                font: "normal 10pt monospace",\n
+            },\n
+            branch: {\n
+                lineWidth: 4,\n
+                spacing: 20,\n
+                label: {\n
+                    color: "#000",\n
+                    font: "normal 10pt monospace",\n
+                },\n
+            },\n
+            commit: {\n
+                dot: {\n
+                    size: 8,\n
+                },\n
+                spacing: 20,\n
+                message: {\n
+                    color: "#fff",\n
+                    font: "normal 10pt monospace",\n
+                },\n
+            },\n
+        });\n"""
+    gitgraph_js = template
+    gitgraph_js += """
+        const gitgraph = GitgraphJS.createGitgraph(document.getElementById("gitGraphContainer"), {
             mode: "extended",
+            template: gitgraph_template,
         });\n"""
 
     commit = initial_commit
