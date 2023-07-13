@@ -136,16 +136,12 @@ insert_commits_html() {
 	# gitgraph_js+="\ncommit_click_$commit_hash_1()\ncommit_click_$commit_hash_2()\n"
 	# append a function that provides a list of commits
 
-	# commits_html="<div id=\"commit_message\"></div><div id=\"gitGraphContainer\"></div>\n<script>$gitgraph_js</script>\n"
+	commits_html="<div id=\"commit_message\"></div><div id=\"gitGraphContainer\"></div>\n<script>$gitgraph_js</script>\n"
 
-	# indent=$(printf '\t%.0s' {1..8})
+	indent=$(printf '\t%.0s' {1..8})
 
 	# shellcheck disable=SC2086,SC2001
-	# commits_html="$(echo ${commits_html} | sed "s|^|${indent}|g" | sed "s|@|-|g" | tee "${OUTPUT_DIR_PATH}/commits.html")"
-
-	echo -e "<div id=\"commit_message\"></div><div id=\"gitGraphContainer\"></div>\n<script>" > "${OUTPUT_DIR_PATH}/commits.html"
-	cat -e "$gitgraph_output_file" >> "${OUTPUT_DIR_PATH}/commits.html"
-	echo -e "</script>\n" >> "${OUTPUT_DIR_PATH}/commits.html"
+	commits_html="$(echo -e ${commits_html} | sed "s|^|${indent}|g" | sed "s|@|-|g" | tee "${OUTPUT_DIR_PATH}/commits.html")"
 
 	line_no=$(($(grep -n "FILL_COMMITS_HERE" "${html_path}" | cut -d":" -f1) + 1))
 	sed -i "${line_no} e cat \"${OUTPUT_DIR_PATH}/commits.html\"" "${html_path}"
