@@ -233,6 +233,7 @@ def commit_graph_to_gitgraph_js(graph: dict, initial_commit: str) -> str:
                             onMouseOver: show_commit_details_{commit},
                             onMouseOut: hide_commit_details,
                             onClick: commit_click_{commit},
+                            onMessageClick: commit_click_{commit},
                             author: "{graph[commit]["author"]} <{graph[commit]["email"]}>",
                             timestamp: "{graph[commit]["timestamp"]}",
                             hash: "{commit}", tag: "{graph[commit]["tag"]}"}}
