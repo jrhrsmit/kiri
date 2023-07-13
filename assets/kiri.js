@@ -52,9 +52,15 @@ function commit_click(hash) {
 }
 
 function show_commit_details(text){
+    // convert plaintext to HTML
+    text = text.replace(/(?:\r\n|\r|\n)/g, '<br>');
+
+    // fill and display div
     var elem = document.getElementById('commit_message')
     elem.style.display = 'block';
     elem.innerHTML = text
+
+    // set position of box next to mouse
     var e = window.event
         x = e.clientX,
         y = e.clientY;
