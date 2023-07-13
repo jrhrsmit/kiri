@@ -145,39 +145,39 @@ def select_next_child(graph: dict, children_remaining: list) -> tuple[list, str]
 
 
 def commit_graph_to_gitgraph_js(graph: dict, initial_commit: str) -> str:
-    template = """\n
-        gitgraph_template = GitgraphJS.templateExtend(GitgraphJS.TemplateName.Metro,\n
-        {\n
-            colors: ["#fff", "#999", "#ccc", "#666"],\n
-            tag: {\n
-                color: "#000",\n
-                font: "normal 10pt monospace",\n
-            },\n
-            branch: {\n
-                lineWidth: 4,\n
-                spacing: 20,\n
-                label: {\n
-                    color: "#000",\n
-                    font: "normal 10pt monospace",\n
-                },\n
-            },\n
-            commit: {\n
-                dot: {\n
-                    size: 8,\n
-                },\n
-                spacing: 30,\n
-                message: {\n
-                    color: "#fff",\n
-                    font: "normal 10pt monospace",\n
-                },\n
-            },\n
-        });\n"""
+    template = """
+        gitgraph_template = GitgraphJS.templateExtend(GitgraphJS.TemplateName.Metro,
+        {
+            colors: ["#fff", "#999", "#ccc", "#666"],
+            tag: {
+                color: "#000",
+                font: "normal 10pt monospace",
+            },
+            branch: {
+                lineWidth: 4,
+                spacing: 20,
+                label: {
+                    color: "#000",
+                    font: "normal 10pt monospace",
+                },
+            },
+            commit: {
+                dot: {
+                    size: 8,
+                },
+                spacing: 30,
+                message: {
+                    color: "#fff",
+                    font: "normal 10pt monospace",
+                },
+            },
+        });"""
     gitgraph_js = template
-    gitgraph_js += """\n
-        const gitgraph = GitgraphJS.createGitgraph(document.getElementById("gitGraphContainer"), {\n
-            mode: "extended",\n
-            template: gitgraph_template,\n
-        });\n"""
+    gitgraph_js += """
+        const gitgraph = GitgraphJS.createGitgraph(document.getElementById("gitGraphContainer"), {
+            mode: "extended",
+            template: gitgraph_template,
+        });"""
 
     commit = initial_commit
 
@@ -220,16 +220,23 @@ def commit_graph_to_gitgraph_js(graph: dict, initial_commit: str) -> str:
 
         # Create commit options for gitgraph
         # commit_options = f'{{subject: "{graph[commit]["subject"]}", body: `{graph[commit]["body"]}`, author: "{graph[commit]["author"]} <{graph[commit]["email"]}>", timestamp: "{graph[commit]["timestamp"]}", hash: "{commit}", tag: "{graph[commit]["tag"]}"}}'
-        tooltip = f'{graph[commit]["author"]}\n{graph[commit]["email"]}\non {graph[commit]["timestamp"]}\n\n{graph[commit]["message"]}'
-        gitgraph_js += f"function show_commit_details_{commit}(){{show_commit_details(`{tooltip}`)}}\n"
-        gitgraph_js += f'function commit_click_{commit}(){{commit_click("{commit}")}}\n'
+        tooltip = f"""{graph[commit]["author"]}\n{graph[commit]["email"]}\non {graph[commit]["timestamp"]}\n\n{graph[commit]["message"]}"""
+        gitgraph_js += f"""function show_commit_details_{commit}(){{
+                show_commit_details(`{tooltip}`)
+            }}
+            """
+        gitgraph_js += f"""function commit_click_{commit}(){{
+                commit_click("{commit}")
+            }}
+            """
         commit_options = f"""{{subject: "{graph[commit]["subject"]}",
                             onMouseOver: show_commit_details_{commit},
                             onMouseOut: hide_commit_details,
                             onClick: commit_click_{commit},
                             author: "{graph[commit]["author"]} <{graph[commit]["email"]}>",
                             timestamp: "{graph[commit]["timestamp"]}",
-                            hash: "{commit}", tag: "{graph[commit]["tag"]}"}}"""
+                            hash: "{commit}", tag: "{graph[commit]["tag"]}"}}
+                            """
 
         # Create the commit
         if len(graph[commit]["parents"]) <= 1:
