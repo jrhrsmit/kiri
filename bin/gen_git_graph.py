@@ -148,7 +148,7 @@ def commit_graph_to_gitgraph_js(graph: dict, initial_commit: str) -> str:
     template = """\n
         gitgraph_template = GitgraphJS.templateExtend(GitgraphJS.TemplateName.Metro,\n
         {\n
-            colors: ["#fff", "#aaa", "#eee", "#999", "#ddd", "#888", "#ccc", "#777"],\n
+            colors: ["#fff", "#999", "#ccc", "#666"],\n
             tag: {\n
                 color: "#000",\n
                 font: "normal 10pt monospace",\n
@@ -165,7 +165,7 @@ def commit_graph_to_gitgraph_js(graph: dict, initial_commit: str) -> str:
                 dot: {\n
                     size: 8,\n
                 },\n
-                spacing: 20,\n
+                spacing: 30,\n
                 message: {\n
                     color: "#fff",\n
                     font: "normal 10pt monospace",\n
@@ -173,10 +173,10 @@ def commit_graph_to_gitgraph_js(graph: dict, initial_commit: str) -> str:
             },\n
         });\n"""
     gitgraph_js = template
-    gitgraph_js += """
-        const gitgraph = GitgraphJS.createGitgraph(document.getElementById("gitGraphContainer"), {
-            mode: "extended",
-            template: gitgraph_template,
+    gitgraph_js += """\n
+        const gitgraph = GitgraphJS.createGitgraph(document.getElementById("gitGraphContainer"), {\n
+            mode: "extended",\n
+            template: gitgraph_template,\n
         });\n"""
 
     commit = initial_commit

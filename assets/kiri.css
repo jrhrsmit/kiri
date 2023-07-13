@@ -83,7 +83,7 @@ html, body {
 
 .scrollbox {
 	overflow: auto;
-	visibility: hidden;
+	visibility: visible;
 }
 
 .scrollbox-content,
