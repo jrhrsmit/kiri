@@ -1913,8 +1913,8 @@ wait_for_cpu_time() {
 	wait_time=0.05
 	max_wait_time=1
 	while [ "$max_num" -le "$current_num" ]; do
-		sleep $wait_time
-		wait_time=$((wait_time + wait_time))
+		sleep "$wait_time"
+		wait_time=$(echo "$wait_time + $wait_time" | bc -l)
 		if [ "$wait_time" -gt "$max_wait_time" ]; then
 			wait_time=$max_wait_time
 		fi
