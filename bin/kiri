@@ -1740,7 +1740,7 @@ generate_3dmodels() {
 		command_end=""
 	fi
 
-	if [[ ! -f $(which stp2gltf) ]]; then
+	if [[ ! -f $(which mayo) ]]; then
 		return
 	fi
 
@@ -1773,7 +1773,7 @@ generate_3dmodels() {
 	if [[ -f "${OUTPUT_DIR_PATH}/${commit_hash_1}/_KIRI_/3d_model/${kicad_project_name_1}.step" ]] && [[ ! -f "${OUTPUT_DIR_PATH}/${commit_hash_1}/_KIRI_/3d_model/${kicad_project_name_1}.gltf" ]]; then
 		cd "${OUTPUT_DIR_PATH}/${commit_hash_1}/_KIRI_/3d_model/"
 		msg="# Converting ${commit_hash_1} 3D Model from .step to .gltf/.bin"
-		cmd="stp2gltf ${kicad_project_name_1}.step ${kicad_project_name_1}.gltf ${kicad_project_name_1}.bin"
+		cmd="mayo ${kicad_project_name_1}.step --export ${kicad_project_name_1}.gltf"
 		cmd_run "${cmd}" "${msg}" "${end}"
 		cd - &>/dev/null
 	fi
@@ -1782,7 +1782,7 @@ generate_3dmodels() {
 	if [[ -f "${OUTPUT_DIR_PATH}/${commit_hash_2}/_KIRI_/3d_model/${kicad_project_name_2}.step" ]] && [[ ! -f "${OUTPUT_DIR_PATH}/${commit_hash_2}/_KIRI_/3d_model/${kicad_project_name_2}.gltf" ]]; then
 		cd "${OUTPUT_DIR_PATH}/${commit_hash_2}/_KIRI_/3d_model/"
 		msg="# Converting ${commit_hash_2} 3D Model from .step to .gltf/.bin"
-		cmd="stp2gltf ${kicad_project_name_2}.step ${kicad_project_name_2}.gltf ${kicad_project_name_2}.bin"
+		cmd="mayo ${kicad_project_name_2}.step --export ${kicad_project_name_2}.gltf"
 		cmd_run "${cmd}" "${msg}" "${end}"
 		cd - &>/dev/null
 	fi
