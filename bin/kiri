@@ -1962,6 +1962,9 @@ generate_diffs() {
 			fi
 		done
 	done
+	echo "  Waiting for remaining diff artifacts to finish..."
+	wait
+	echo "  Artifacts generation done."
 }
 
 build_main_html() {
