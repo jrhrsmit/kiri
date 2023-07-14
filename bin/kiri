@@ -136,13 +136,12 @@ insert_commits_html() {
 	# gitgraph_js+="\ncommit_click_$commit_hash_1()\ncommit_click_$commit_hash_2()\n"
 	# append a function that provides a list of commits
 
-
 	indent=$(printf '\t%.0s' {1..8})
 
 	# shellcheck disable=SC2086,SC2001
-	echo -e '<div id="commit_message"></div><div id="gitGraphContainer"></div>\n<script>\n' > "${OUTPUT_DIR_PATH}/commits.html"
+	echo -e '<div id="commit_message"></div><div id="gitGraphContainer"></div>\n<script>\n' >"${OUTPUT_DIR_PATH}/commits.html"
 	commits_html="$(echo -e ${gitgraph_js} | sed "s|^|${indent}|g" | sed "s|@|-|g" | tee -a "${OUTPUT_DIR_PATH}/commits.html")"
-	echo -e '\n</script>\n' >> "${OUTPUT_DIR_PATH}/commits.html"
+	echo -e '\n</script>\n' >>"${OUTPUT_DIR_PATH}/commits.html"
 
 	line_no=$(($(grep -n "FILL_COMMITS_HERE" "${html_path}" | cut -d":" -f1) + 1))
 	sed -i "${line_no} e cat \"${OUTPUT_DIR_PATH}/commits.html\"" "${html_path}"
@@ -1796,7 +1795,7 @@ generate_artifact() {
 	j=$4
 
 	if [[ -d "${OUTPUT_DIR_PATH}/${hash_2}" ]]; then
-		return	
+		return
 	fi
 
 	if [[ "${VERBOSE}" == "1" ]] || [[ "${DEBUG}" == "1" ]]; then
@@ -1879,7 +1878,7 @@ generate_artifact() {
 
 	local kicad_pro_2="$(get_kicad_pro "${OUTPUT_DIR_PATH}/${hash_2}")"
 	if [[ ! -f "${OUTPUT_DIR_PATH}/${hash_2}/${kicad_pro_2}" ]]; then
-	 	return	
+		return
 	fi
 
 	local kicad_pro_extension_2="$(get_file_extension "${kicad_pro_2}")"
@@ -1907,16 +1906,19 @@ generate_artifact() {
 wait_for_cpu_time() {
 	local max_num
 	local current_num
-	local wait_time
+	local wait_time_ms
+	local wait_time_s
+	local max_wait_time_ms
 	max_num=$(nproc)
 	current_num=$(jobs | wc -l)
-	wait_time=0.05
-	max_wait_time=1
-	while [ "$max_num" -le "$current_num" ]; do
-		sleep "$wait_time"
-		wait_time=$(echo "$wait_time + $wait_time" | bc -l)
-		if [ "$wait_time" -gt "$max_wait_time" ]; then
-			wait_time=$max_wait_time
+	wait_time_ms=50
+	max_wait_time_ms=1000
+	while [[ "$max_num" -le "$current_num" ]]; do
+		wait_time_s=$(echo "$wait_time_ms / 1000" | bc -l)
+		sleep "$wait_time_s"
+		wait_time_ms=$((wait_time_ms + wait_time_ms))
+		if [[ "$wait_time_ms" -gt "$max_wait_time_ms" ]]; then
+			wait_time_ms=$max_wait_time_ms
 		fi
 		max_num=$(nproc)
 		current_num=$(jobs | wc -l)
