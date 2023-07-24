@@ -1909,7 +1909,7 @@ wait_for_cpu_time() {
 	local wait_time_ms
 	local wait_time_s
 	local max_wait_time_ms
-	max_num=$(nproc)
+	max_num=$(($(nproc) - 1))
 	current_num=$(jobs | wc -l)
 	wait_time_ms=50
 	max_wait_time_ms=1000
