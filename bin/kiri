@@ -604,7 +604,9 @@ check_required_tools() {
 	local no_exit=1
 
 	readonly PLOTGITSCH_MISSING=$(is_tool_avail "plotgitsch" ${no_exit})
-	readonly KIDIFF_MISSING=$(is_tool_avail "kidiff" ${no_exit})
+	if [[ -z $KIDIFF_MISSING ]]; then
+		readonly KIDIFF_MISSING=$(is_tool_avail "kidiff" ${no_exit})
+	fi
 
 	is_tool_avail "dos2unix"
 
@@ -1630,6 +1632,12 @@ generate_layout_artifacts() {
 		export SVG2_DIR_PATH="${OUTPUT_DIR_PATH}/${commit_hash_2}/_KIRI_/pcb"
 		mkdir -p "${SVG1_DIR_PATH}"
 		mkdir -p "${SVG2_DIR_PATH}"
+		local page_options
+		if [[ ${PAGE_FRAME} == "1" ]]; then
+			page_options="--page-size-mode 0"
+		else
+			page_options="--exclude-drawing-sheet --page-size-mode 2"
+		fi
 
 		# This one is needed only once since it is always the same
 		if [[ "${i}" == "2" ]]; then
@@ -1643,7 +1651,7 @@ generate_layout_artifacts() {
 				layer_id=$(echo "${pcb_layers}" | grep "${layer_name}" | sed "s/[ \t]*(//g" | cut -d " " -f 1 | xargs printf "%02d")
 
 				msg="# Plotting layout ${commit_hash_2}, ${layer_name}"
-				cmd="kicad-cli pcb export svg --exclude-drawing-sheet --page-size-mode 0 --black-and-white \"${OUTPUT_DIR_PATH}/${commit_hash_2}/${kicad_pcb_2}\" --output \"${SVG1_DIR_PATH}/layer-${layer_id}.svg\" --layers \"Edge.Cuts,${layer_name}\""
+				cmd="kicad-cli pcb export svg $page_options --black-and-white \"${OUTPUT_DIR_PATH}/${commit_hash_2}/${kicad_pcb_2}\" --output \"${SVG1_DIR_PATH}/layer-${layer_id}.svg\" --layers \"Edge.Cuts,${layer_name}\""
 				end="${command_end}"
 				cmd_run "${cmd}" "${msg}" "${end}"
 
@@ -1659,7 +1667,7 @@ generate_layout_artifacts() {
 			layer_id=$(echo "${pcb_layers}" | grep "${layer_name}" | sed "s/[ \t]*(//g" | cut -d " " -f 1 | xargs printf "%02d")
 
 			msg="# Plotting layout ${commit_hash_1}, ${layer_name}"
-			cmd="kicad-cli pcb export svg --exclude-drawing-sheet --page-size-mode 0 --black-and-white \"${OUTPUT_DIR_PATH}/${commit_hash_1}/${kicad_pcb_1}\" --output \"${SVG2_DIR_PATH}/layer-${layer_id}.svg\" --layers \"Edge.Cuts,${layer_name}\""
+			cmd="kicad-cli pcb export svg $page_options --black-and-white \"${OUTPUT_DIR_PATH}/${commit_hash_1}/${kicad_pcb_1}\" --output \"${SVG2_DIR_PATH}/layer-${layer_id}.svg\" --layers \"Edge.Cuts,${layer_name}\""
 			end="${command_end}"
 			cmd_run "${cmd}" "${msg}" "${end}"
 
