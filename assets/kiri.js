@@ -40,7 +40,7 @@ function set_commits_list(commits) {
 function commit_click(hash) {
     hash_idx = 0;
     commit1_idx = 0;
-    commit1_idx = 0;
+    commit2_idx = 0;
     for (let i = 0; i < gitgraph._graph.commits.length; i++) {
         if (gitgraph._graph.commits[i].hash == hash) {
             hash_idx = i;
@@ -558,9 +558,10 @@ function update_3d() {
         lastEmbed = createNewEmbed3d(model_1, model_2)
     }
     else {
-
-        document.getElementById("diff-model-1").src.baseVal = model_1;
-        document.getElementById("diff-model-2").src.baseVal = model_2;
+        document.getElementById("diff-model-1").setAttribute("src", model_1);
+        document.getElementById("diff-model-2").setAttribute("src", model_2);
+        document.getElementById("diff-model-1").setAttribute("alt", `${commit1} glTF model missing`);
+        document.getElementById("diff-model-2").setAttribute("alt", `${commit2} glTF model missing`);
 
         if_url_exists(model_1, function (exists) {
             if (exists == true) {
@@ -1052,19 +1053,18 @@ function update_layer() {
 // =======================================
 
 function select_initial_commits() {
-    //var commits = $("#commits_form input:checkbox[name='commit']");
-    var commits = commits_list;
+    var commits = gitgraph._graph.commits;
 
     if (commits.length >= 2) {
-        commit1 = commits[0];
-        commit2 = commits[1];
-        //commits[0].checked = true;
-        //commits[1].checked = true;
+        commit1 = commits[commits.length - 1].hash;
+        commit2 = commits[commits.length - 2].hash;
     }
     else if (commits.length == 1) {
-        commit1 = commits[0];
-        //commits[0].checked = true;
+        commit1 = commits[commits.length - 1].hash;
     }
+    // simulate click to highlight them
+    commit_click(commit1);
+    commit_click(commit2);
 }
 
 function get_selected_commits() {
@@ -1257,10 +1257,10 @@ function update_3d_camera() {
     obj1 = document.getElementById("diff-model-1")
     obj2 = document.getElementById("diff-model-2")
     if (obj1 && obj2) {
-        obj2.setAttribute("field-of-view", obj1.getFieldOfView())
+        obj2.setAttribute("field-of-view", obj1.getFieldOfView());
         obj2.setAttribute("camera-target", obj1.getCameraTarget())
-        obj2.setAttribute("camera-orbit", obj1.getCameraOrbit())
-        obj2.jumpCameraToGoal()
+        obj2.setAttribute("camera-orbit", obj1.getCameraOrbit());
+        obj2.jumpCameraToGoal();
     }
 
     setTimeout(update_3d_camera, 50);
@@ -1277,12 +1277,12 @@ function createNewEmbed3d(src1, src2) {
 
     var svg_element = `
 	    <model-viewer id="diff-model-1"
-	    	alt="${src1}"
+            alt="${commit1} glTF model missing"
 	    	src="${src1}" shadow-intensity="1" camera-controls
             disable-zoom
 	    	touch-action="pan-y"></model-viewer>
 	    <model-viewer id="diff-model-2"
-	    	alt="${src2}"
+            alt="${commit2} glTF model missing"
 	    	src="${src2}" shadow-intensity="1" 
             disable-zoom
 	    	touch-action="pan-y"></model-viewer>
