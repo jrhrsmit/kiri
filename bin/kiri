@@ -1491,7 +1491,7 @@ generate_schematic_artifacts() {
 		# This one is needed only once since it is always the same
 		if [[ "${i}" == "2" ]]; then
 
-			msg="# Plotting schematics ${commit_hash_2}"
+			msg="# Plotting schematics ${commit_hash_1}"
 			cmd="kicad-cli sch export svg --black-and-white --no-background-color --output \"${SVG1_DIR_PATH}\" \"${OUTPUT_DIR_PATH}/${commit_hash_1}/${kicad_sch_1}\""
 			end="${command_end}"
 			cmd_run "${cmd}" "${msg}" "${end}"
@@ -1507,7 +1507,7 @@ generate_schematic_artifacts() {
 			IFS="${original_ifs}"
 		fi
 
-		msg="# Plotting schematics ${commit_hash_1}"
+		msg="# Plotting schematics ${commit_hash_2}"
 		cmd="kicad-cli sch export svg --black-and-white --no-background-color --output \"${SVG2_DIR_PATH}\" \"${OUTPUT_DIR_PATH}/${commit_hash_2}/${kicad_sch_2}\""
 		end="${command_end}"
 		cmd_run "${cmd}" "${msg}" "${end}"
@@ -1640,16 +1640,16 @@ generate_layout_artifacts() {
 		# This one is needed only once since it is always the same
 		if [[ "${i}" == "2" ]]; then
 
-			pcb_layers=$(grep "^[ \t]\+([0-9][0-9]* " ${OUTPUT_DIR_PATH}/${commit_hash_2}/"${kicad_pcb_2}")
-			layers_name=$(grep "^[ \t]\+([0-9][0-9]* " "${OUTPUT_DIR_PATH}/${commit_hash_2}/${kicad_pcb_2}" | sed "s/\"//g" | sed "s/^[ \t]\+//g" | cut -d" " -f2)
+			pcb_layers=$(grep "^[ \t]\+([0-9][0-9]* " ${OUTPUT_DIR_PATH}/${commit_hash_1}/"${kicad_pcb_1}")
+			layers_name=$(grep "^[ \t]\+([0-9][0-9]* " "${OUTPUT_DIR_PATH}/${commit_hash_1}/${kicad_pcb_1}" | sed "s/\"//g" | sed "s/^[ \t]\+//g" | cut -d" " -f2)
 			# layers_name=$(grep "^[ \t]\+([0-9][0-9]* " "${OUTPUT_DIR_PATH}/${commit_hash_2}/${kicad_pcb_2}" | cut -d"\"" -f2)
 
 			for layer_name in ${layers_name[@]}; do
 
 				layer_id=$(echo "${pcb_layers}" | grep "${layer_name}" | sed "s/[ \t]*(//g" | cut -d " " -f 1 | xargs printf "%02d")
 
-				msg="# Plotting layout ${commit_hash_2}, ${layer_name}"
-				cmd="kicad-cli pcb export svg $page_options --black-and-white \"${OUTPUT_DIR_PATH}/${commit_hash_2}/${kicad_pcb_2}\" --output \"${SVG1_DIR_PATH}/layer-${layer_id}.svg\" --layers \"Edge.Cuts,${layer_name}\""
+				msg="# Plotting layout ${commit_hash_1}, ${layer_name}"
+				cmd="kicad-cli pcb export svg $page_options --black-and-white \"${OUTPUT_DIR_PATH}/${commit_hash_1}/${kicad_pcb_1}\" --output \"${SVG1_DIR_PATH}/layer-${layer_id}.svg\" --layers \"Edge.Cuts,${layer_name}\""
 				end="${command_end}"
 				cmd_run "${cmd}" "${msg}" "${end}"
 
@@ -1664,8 +1664,8 @@ generate_layout_artifacts() {
 
 			layer_id=$(echo "${pcb_layers}" | grep "${layer_name}" | sed "s/[ \t]*(//g" | cut -d " " -f 1 | xargs printf "%02d")
 
-			msg="# Plotting layout ${commit_hash_1}, ${layer_name}"
-			cmd="kicad-cli pcb export svg $page_options --black-and-white \"${OUTPUT_DIR_PATH}/${commit_hash_1}/${kicad_pcb_1}\" --output \"${SVG2_DIR_PATH}/layer-${layer_id}.svg\" --layers \"Edge.Cuts,${layer_name}\""
+			msg="# Plotting layout ${commit_hash_2}, ${layer_name}"
+			cmd="kicad-cli pcb export svg $page_options --black-and-white \"${OUTPUT_DIR_PATH}/${commit_hash_2}/${kicad_pcb_2}\" --output \"${SVG2_DIR_PATH}/layer-${layer_id}.svg\" --layers \"Edge.Cuts,${layer_name}\""
 			end="${command_end}"
 			cmd_run "${cmd}" "${msg}" "${end}"
 
@@ -1758,7 +1758,7 @@ generate_3dmodels() {
 	# Export step, if missing
 	if [[ ! -f "${OUTPUT_DIR_PATH}/${commit_hash_1}/${kicad_project_name_1}.step" ]]; then
 		msg="# Exporting ${commit_hash_1} .kicad_pcb to .step"
-		cmd="kicad-cli pcb export step --subst-models -f -o \"${OUTPUT_DIR_PATH}/${commit_hash_1}/_KIRI_/3d_model/${kicad_project_name_1}.step\" \"${kicad_pcb_1}\""
+		cmd="kicad-cli pcb export step --subst-models -f -o \"${OUTPUT_DIR_PATH}/${commit_hash_1}/_KIRI_/3d_model/${kicad_project_name_1}.step\" \"${OUTPUT_DIR_PATH}/${commit_hash_1}/${kicad_pcb_1}\""
 		cmd_run "${cmd}" "${msg}" "${end}"
 	else
 		# echo "${commit_hash_1}, 3D Model ${OUTPUT_DIR_PATH}/${commit_hash_1}/${kicad_project_name_1}.step found"
@@ -1768,7 +1768,7 @@ generate_3dmodels() {
 	# Export step, if missing
 	if [[ ! -f "${OUTPUT_DIR_PATH}/${commit_hash_2}/${kicad_project_name_2}.step" ]]; then
 		msg="# Exporting ${commit_hash_2} .kicad_pcb to .step"
-		cmd="kicad-cli pcb export step --subst-models -f -o \"${OUTPUT_DIR_PATH}/${commit_hash_2}/_KIRI_/3d_model/${kicad_project_name_2}.step\" \"${kicad_pcb_2}\""
+		cmd="kicad-cli pcb export step --subst-models -f -o \"${OUTPUT_DIR_PATH}/${commit_hash_2}/_KIRI_/3d_model/${kicad_project_name_2}.step\" \"${OUTPUT_DIR_PATH}/${commit_hash_2}/${kicad_pcb_2}\""
 		cmd_run "${cmd}" "${msg}" "${end}"
 	else
 		# echo "${commit_hash_2}, 3D Model ${OUTPUT_DIR_PATH}/${commit_hash_2}/${kicad_project_name_2}.step found"
