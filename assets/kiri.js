@@ -38,9 +38,9 @@ function set_commits_list(commits) {
 }
 
 function commit_click(hash) {
-    hash_idx=0;
-    commit1_idx=0;
-    commit1_idx=0;
+    hash_idx = 0;
+    commit1_idx = 0;
+    commit1_idx = 0;
     for (let i = 0; i < gitgraph._graph.commits.length; i++) {
         if (gitgraph._graph.commits[i].hash == hash) {
             hash_idx = i;
@@ -275,9 +275,12 @@ function reset_commits_selection() {
 function toggle_sch_pcb_view() {
     old_view = current_view;
     current_view = $('#view_mode input[name="view_mode"]:checked').val();
+    console.log(`toggle_sch_pcb_view(): ${old_view} -> ${current_view}`);
     if (current_view == "show_sch") {
         show_pcb();
-    } else {
+    } else if (current_view == "show_pcb") {
+        show_3d();
+    } else if (current_view == "show_3d") {
         show_sch();
     }
     update_commits();
@@ -323,7 +326,7 @@ function select_next_sch_or_pcb(cycle = false) {
 }
 
 function select_preview_sch_or_pcb(cycle = false) {
-    if (document.getElementById("show_sch").checked) {
+    if (current_view == "show_sch") {
         pages = $("#pages_list input:radio[name='pages']");
         selected_page = pages.index(pages.filter(':checked'));
 
@@ -342,7 +345,7 @@ function select_preview_sch_or_pcb(cycle = false) {
         update_page();
         update_sheets_list(commit1, commit2);
 
-    } else {
+    } else if (current_view == "show_pcb") {
         layers = $("#layers_list input:radio[name='layers']");
         selected_layer = layers.index(layers.filter(':checked'));
 
@@ -523,8 +526,10 @@ function update_commits() {
 
     if (current_view == "show_sch") {
         update_page();
-    } else {
+    } else if (current_view == "show_pcb") {
         update_layer();
+    } else if (current_view == "show_3d") {
+        update_3d();
     }
 }
 
@@ -540,6 +545,41 @@ function loadFile(filePath) {
         result = xmlhttp.responseText;
     }
     return result;
+}
+
+function update_3d() {
+    console.log("-----------------------------------------");
+    console.log(`Update 3D: ${old_view} -> ${current_view}`)
+
+    model_1 = `../${commit1}/_KIRI_/3d_model/main.gltf`;
+    model_2 = `../${commit2}/_KIRI_/3d_model/main.gltf`;
+    if (current_view != old_view) {
+        removeEmbed();
+        lastEmbed = createNewEmbed3d(model_1, model_2)
+    }
+    else {
+
+        document.getElementById("diff-model-1").src.baseVal = model_1;
+        document.getElementById("diff-model-2").src.baseVal = model_2;
+
+        if_url_exists(model_1, function (exists) {
+            if (exists == true) {
+                document.getElementById("diff-model-1").parentElement.style.display = 'inline';
+            }
+            else {
+                document.getElementById("diff-model-1").parentElement.style.display = "none";
+            }
+        });
+
+        if_url_exists(model_2, function (exists) {
+            if (exists == true) {
+                document.getElementById("diff-model-2").parentElement.style.display = 'inline';
+            }
+            else {
+                document.getElementById("diff-model-2").parentElement.style.display = "none";
+            }
+        });
+    }
 }
 
 function update_page() {
@@ -595,7 +635,6 @@ function update_page() {
     var image_path_timestamp_2 = image_path_2 + url_timestamp(commit2);
 
     if (current_view != old_view) {
-        old_view = current_view;
         removeEmbed();
         lastEmbed = createNewEmbed(image_path_timestamp_1, image_path_timestamp_2);
     }
@@ -973,8 +1012,9 @@ function update_layer() {
     var image_path_timestamp_1 = image_path_1 + url_timestamp(commit1);
     var image_path_timestamp_2 = image_path_2 + url_timestamp(commit2);
 
+    console.log(`update_layer(): ${old_view} -> ${current_view}`);
+
     if (current_view != old_view) {
-        old_view = current_view;
         removeEmbed();
         lastEmbed = createNewEmbed(image_path_timestamp_1, image_path_timestamp_2);
     }
@@ -1071,15 +1111,17 @@ function ready() {
     check_server_status();
     select_initial_commits();
 
+    update_3d_camera();
+
     update_commits();
 
     if (selected_view == "schematic") {
         // show_sch();
-        update_page(commit1, commit2);
+        update_page();
     }
     else {
         // show_pcb();
-        update_layer(commit1, commit2);
+        update_layer();
     }
 }
 
@@ -1094,80 +1136,74 @@ window.addEventListener('DOMContentLoaded', ready);
 // =======================================
 
 function show_sch() {
+    old_view = current_view;
+    current_view = "show_sch";
     // Show schematic stuff
     document.getElementById("show_sch_lbl").classList.add('active');
     document.getElementById("show_sch").checked = true;
-    // document.getElementById("diff-sch").style.display = "inline";
-    document.getElementById("diff-xlink-1").parentElement.style.display = "inline";
-    document.getElementById("diff-xlink-2").parentElement.style.display = "inline";
     document.getElementById("pages_list").style.display = "inline";
     document.getElementById("sch_title").style.display = "inline";
 
     // Hide layout stuff
     document.getElementById("show_pcb_lbl").classList.remove('active');
     document.getElementById("show_pcb").checked = false;
-    // document.getElementById("diff-pcb").style.display = "none";
-    // document.getElementById("diff-xlink-1-pcb").parentElement.style.display = "none";
-    // document.getElementById("diff-xlink-2-pcb").parentElement.style.display = "none";
     document.getElementById("layers_list").style.display = "none";
     document.getElementById("pcb_title").style.display = "none";
 
-    update_page(commit1, commit2);
+    // Hide 3D stuff
+    document.getElementById("show_3d_lbl").classList.remove('active');
+    document.getElementById("show_3d").checked = false;
+    document.getElementById("3d_title").style.display = "none";
+
+    update_page();
 }
 
 function show_pcb() {
+    old_view = current_view;
+    current_view = "show_pcb";
     // Show layout stuff
     document.getElementById("show_pcb_lbl").classList.add('active');
     document.getElementById("show_pcb").checked = true;
-    // document.getElementById("diff-pcb").style.display = "inline";
-    document.getElementById("diff-xlink-1").parentElement.style.display = "inline";
-    document.getElementById("diff-xlink-2").parentElement.style.display = "inline";
     document.getElementById("layers_list").style.display = "inline";
     document.getElementById("pcb_title").style.display = "inline";
 
     // Hide schematic stuff
     document.getElementById("show_sch_lbl").classList.remove('active');
     document.getElementById("show_sch").checked = false;
-    // document.getElementById("diff-sch").style.display = "none";
-    // document.getElementById("diff-xlink-1-sch").parentElement.style.display = "none";
-    // document.getElementById("diff-xlink-2-sch").parentElement.style.display = "none";
     document.getElementById("pages_list").style.display = "none";
     document.getElementById("sch_title").style.display = "none";
 
-    update_layer(commit1, commit2);
-}
+    // Hide 3D stuff
+    document.getElementById("show_3d_lbl").classList.remove('active');
+    document.getElementById("show_3d").checked = false;
+    document.getElementById("3d_title").style.display = "none";
 
-// =======================================
-// Toggle Onion/Slide
-// =======================================
-
-function show_onion() {
-    // console.log("Function:", "show_onion");
-}
-
-function show_slide() {
-    // console.log("Function:", "show_slide");
-}
-
-// =======================================
-// =======================================
-
-function update_page_onclick(obj) {
-    update_page();
-}
-
-function update_layer_onclick(obj) {
     update_layer();
 }
 
-// Hide fields with missing images
-function imgError(image) {
-    // console.log("Image Error (missing or problematic) =", image.href.baseVal);
-    image.onerror = null;
-    parent = document.getElementById(image.id).parentElement;
-    parent.style.display = "none";
-    return true;
+function show_3d() {
+    old_view = current_view;
+    current_view = "show_3d";
+    // Show 3D stuff
+    document.getElementById("show_3d_lbl").classList.add('active');
+    document.getElementById("show_3d").checked = true;
+    document.getElementById("3d_title").style.display = "inline";
+
+    // Hide layout stuff
+    document.getElementById("show_pcb_lbl").classList.remove('active');
+    document.getElementById("show_pcb").checked = false;
+    document.getElementById("layers_list").style.display = "none";
+    document.getElementById("pcb_title").style.display = "none";
+
+    // Hide schematic stuff
+    document.getElementById("show_sch_lbl").classList.remove('active');
+    document.getElementById("show_sch").checked = false;
+    document.getElementById("pages_list").style.display = "none";
+    document.getElementById("sch_title").style.display = "none";
+
+    update_3d();
 }
+
 
 
 // #===========================
@@ -1217,7 +1253,51 @@ function server_is_offline() {
     }
 }
 
+function update_3d_camera() {
+    obj1 = document.getElementById("diff-model-1")
+    obj2 = document.getElementById("diff-model-2")
+    if (obj1 && obj2) {
+        obj2.setAttribute("field-of-view", obj1.getFieldOfView())
+        obj2.setAttribute("camera-target", obj1.getCameraTarget())
+        obj2.setAttribute("camera-orbit", obj1.getCameraOrbit())
+        obj2.jumpCameraToGoal()
+    }
+
+    setTimeout(update_3d_camera, 50);
+}
+
 // ==================================================================
+
+function createNewEmbed3d(src1, src2) {
+    console.log("createNewEmbed3d...");
+
+    var embed = document.createElement('div');
+    embed.setAttribute('id', "div-svg");
+    embed.setAttribute('style', "position: absolute; display: inline; width: inherit; min-width: inherit; max-width: inherit; height: inherit; min-height: inherit; max-height: inherit;");
+
+    var svg_element = `
+	    <model-viewer id="diff-model-1"
+	    	alt="${src1}"
+	    	src="${src1}" shadow-intensity="1" camera-controls
+            disable-zoom
+	    	touch-action="pan-y"></model-viewer>
+	    <model-viewer id="diff-model-2"
+	    	alt="${src2}"
+	    	src="${src2}" shadow-intensity="1" 
+            disable-zoom
+	    	touch-action="pan-y"></model-viewer>
+        `;
+
+
+    document.getElementById('diff-container').appendChild(embed);
+    document.getElementById('div-svg').innerHTML = svg_element;
+    console.log(">>> model-viewer: ", embed);
+
+    panZoom_instance.destroy();
+    panZoom_instance = null;
+
+    return embed;
+}
 
 function createNewEmbed(src1, src2) {
     console.log("createNewEmbed...");
@@ -1333,17 +1413,20 @@ function removeEmbed() {
 
     // Destroy svgpanzoom
     if (panZoom_instance) {
-        if (current_view == "show_pcb") {
-            sch_current_zoom = panZoom_instance.getZoom();
-            sch_current_pan = panZoom_instance.getPan();
-            sch_old_zoom = null;
-        } else {
-            pcb_current_zoom = panZoom_instance.getZoom();
-            pcb_current_pan = panZoom_instance.getPan();
-            pcb_old_zoom = null;
+        if (old_view != "show_3d") {
+            if (current_view == "show_pcb") {
+                sch_current_zoom = panZoom_instance.getZoom();
+                sch_current_pan = panZoom_instance.getPan();
+                sch_old_zoom = null;
+            } else if (current_view == "show_sch") {
+                pcb_current_zoom = panZoom_instance.getZoom();
+                pcb_current_pan = panZoom_instance.getPan();
+                pcb_old_zoom = null;
+            }
         }
 
         panZoom_instance.destroy();
+        panZoom_instance = null;
 
         // Remove event listener
         lastEmbed.removeEventListener('load', lastEventListener);

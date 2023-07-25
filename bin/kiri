@@ -2062,6 +2062,7 @@ build_main_html() {
 	echo "- PCB title: ${BTE}${LCY}${pcb_label}${RCO}"
 	sed -i "s|\[SCH_TITLE\]|Sch \| ${sch_title}|g" "${WEB_DIR_PATH}/${main_html}"
 	sed -i "s|\[PCB_TITLE\]|PCB \| ${pcb_title}|g" "${WEB_DIR_PATH}/${main_html}"
+	sed -i "s|\[3D_TITLE\]|3D \| ${pcb_title}|g" "${WEB_DIR_PATH}/${main_html}"
 
 	# Set schematic and board revision
 	local sch_revision=$(grep -i "Rev" "${_kicad_sch}" -m1 2>/dev/null | sed "s/^[ \t]\+//g" | sed "s/[()]//g" | cut -d" " -f2- | sed "s/\"//g")
