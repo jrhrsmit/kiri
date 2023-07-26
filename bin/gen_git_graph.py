@@ -220,7 +220,9 @@ def commit_graph_to_gitgraph_js(graph: dict, initial_commit: str) -> str:
 
         # Create commit options for gitgraph
         # commit_options = f'{{subject: "{graph[commit]["subject"]}", body: `{graph[commit]["body"]}`, author: "{graph[commit]["author"]} <{graph[commit]["email"]}>", timestamp: "{graph[commit]["timestamp"]}", hash: "{commit}", tag: "{graph[commit]["tag"]}"}}'
-        tooltip = f"""{graph[commit]["author"]}\n{graph[commit]["email"]}\non {graph[commit]["timestamp"]}\n\n{graph[commit]["message"]}"""
+        timestamp_str = str(graph[commit]["timestamp"])
+        line_separator = "-" * max(len(graph[commit]["author"]), len(graph[commit]["email"]), len(timestamp_str))
+        tooltip = f"""{graph[commit]["author"]}\n{graph[commit]["email"]}\non {timestamp_str}\n\n{line_separator}\n\n{graph[commit]["message"]}"""
         gitgraph_js += f"""function show_commit_details_{commit}(){{
                 show_commit_details(`{tooltip}`)
             }}
