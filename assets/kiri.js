@@ -83,16 +83,19 @@ function commit_click(hash) {
     update_commits()
 }
 
+var converter = new showdown.Converter();
 function show_commit_details(text) {
     // convert plaintext to HTML
-    console.log(`Commits text:\n${text}`)
-    text = text.replace(/(?:\r\n|\r|\n)/g, '<br>');
-    console.log(`Commits text:\n${text}`)
+    console.log(`Commits text raw:\n${text}`)
+    // text = text.replace(/(?:\r\n|\r|\n)/g, '<br>');
+    // console.log(`Commits text HTML:\n${text}`)
+
+    var html_msg = converter.makeHtml(text);
 
     // fill and display div
     var elem = document.getElementById('commit_message')
     elem.style.display = 'block';
-    elem.innerHTML = text
+    elem.innerHTML = html_msg;
 
     // set position of box next to mouse
     var e = window.event
