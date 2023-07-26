@@ -83,7 +83,7 @@ function commit_click(hash) {
     update_commits()
 }
 
-var converter = new showdown.Converter({simpleLineBreaks: true});
+var converter = new showdown.Converter({ simpleLineBreaks: true });
 function show_commit_details(text) {
     // convert plaintext to HTML
     console.log(`Commits text raw:\n${text}`)
@@ -572,7 +572,7 @@ function update_3d() {
 
         if_url_exists(model_1, function (exists) {
             if (exists == true) {
-                document.getElementById("diff-model-1").parentElement.style.display = 'inline';
+                document.getElementById("diff-model-1").parentElement.style.display = 'inline-block';
             }
             else {
                 document.getElementById("diff-model-1").parentElement.style.display = "none";
@@ -581,7 +581,7 @@ function update_3d() {
 
         if_url_exists(model_2, function (exists) {
             if (exists == true) {
-                document.getElementById("diff-model-2").parentElement.style.display = 'inline';
+                document.getElementById("diff-model-2").parentElement.style.display = 'inline-block';
             }
             else {
                 document.getElementById("diff-model-2").parentElement.style.display = "none";
@@ -1280,7 +1280,6 @@ function createNewEmbed3d(src1, src2) {
 
     var embed = document.createElement('div');
     embed.setAttribute('id', "div-svg");
-    embed.setAttribute('style', "position: absolute; display: inline; width: inherit; min-width: inherit; max-width: inherit; height: inherit; min-height: inherit; max-height: inherit;");
 
     var svg_element = `
 	    <model-viewer id="diff-model-1"
@@ -1303,6 +1302,7 @@ function createNewEmbed3d(src1, src2) {
 
     document.getElementById('diff-container').appendChild(embed);
     document.getElementById('div-svg').innerHTML = svg_element;
+    document.getElementById('div-svg').style.display = "inline-block";
     console.log(">>> model-viewer: ", embed);
 
     if (panZoom_instance) {
@@ -1328,12 +1328,11 @@ function createNewEmbed(src1, src2) {
 
     var embed = document.createElement('div');
     embed.setAttribute('id', "div-svg");
-    embed.setAttribute('style', "display: inline; width: inherit; min-width: inherit; max-width: inherit; height: inherit; min-height: inherit; max-height: inherit;");
 
     var svg_element = `
-    <svg id="svg-id" xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" style="display: inline; width: inherit; min-width: inherit; max-width: inherit; height: inherit; min-height: inherit; max-height: inherit;">
+    <svg id="svg-id" xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink">
       <g class="my_svg-pan-zoom_viewport">
-          <svg id="img-1" style="display: inline;">
+          <svg id="img-1">
               <defs>
                   <filter id="filter-1">
                       <feColorMatrix in=SourceGraphic type="matrix"
@@ -1347,7 +1346,7 @@ function createNewEmbed(src1, src2) {
                   onerror="this.onerror=null; imgError(this);"
                   href="${src1}" xlink:href="${src1}"/>
           </svg>
-          <svg id="img-2" style="display: inline;">
+          <svg id="img-2">
               <defs>
                   <filter id="filter-2">
                       <feColorMatrix in=SourceGraphic type="matrix"
@@ -1451,19 +1450,21 @@ function removeEmbed() {
 
         panZoom_instance.destroy();
         panZoom_instance = null;
+    }
 
-        // Remove event listener
+
+    // Remove event listener
+    if(lastEmbed) {
         lastEmbed.removeEventListener('load', lastEventListener);
-
-        // Null last event listener
-        lastEventListener = null;
-
         // Remove embed element
         document.getElementById('diff-container').removeChild(lastEmbed);
-
-        // Null reference to embed
-        lastEmbed = null;
     }
+
+    // Null last event listener
+    lastEventListener = null;
+
+    // Null reference to embed
+    lastEmbed = null;
 }
 
 function update_fullscreen_label() {

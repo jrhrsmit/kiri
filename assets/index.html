@@ -48,13 +48,13 @@
 							<span style="margin-left:5px; margin-right:0.5em" class="iconify" data-icon="fa-solid:code-branch" data-inline="false"></span>
 							Commits
 						</p>
-						<div class="form-check scrollbox" style="padding: 0px 4px 8px 0px; margin: 0px; margin-right: 4px; overflow-y: scroll">
+						<div id="commits-container" class="form-check scrollbox">
 							<!-- FILL_COMMITS_HERE -->
 						</div>
 					</div>
 				</div>
 
-				<div class="col align-self-start justify-content-start col-7 no-gutters" style="background-color: #333; padding: 0px 0px 0px 0px; margin: 0px; height: 90vh;">
+				<div class="col align-self-start justify-content-start col-7 no-gutters" style="background-color: #333; padding: 0px 0px 0px 0px; margin: 0px; height: 100%;">
 
 					<div class="row no-gutters" style="width: 100%; padding: 0px 0px 0px 0px; margin: 0px;">
 
@@ -111,7 +111,7 @@
 						</div>
 					</div>
 					<div class="col no-gutters" style="width: 100%; padding: 0px 0px 0px 0px; margin: 0px; height: 100%; ">
-						<div class="col no-gutters" style="width: 100%; height: 90%; padding: 0px 0px 0px 0px; margin: 0px;">
+						<div class="col no-gutters" style="width: 100%; height: 100%; padding: 0px 0px 0px 0px; margin: 0px;">
 							<div id="legend" class="rounded no-gutters" style="background-color: #222; width: 100%; padding: 8px 5px 8px 5px; margin: 0px;">
 								<iframe name="hidden_post_target" class="hidden_iframe"></iframe>
 								<span id=commit1_legend style="margin-left:0.5em; margin-right:0.2em; color: #00FFFF; width: 10px; height: 10px;" class="iconify" data-icon="teenyicons-square-solid"></span>
@@ -143,7 +143,7 @@
 								</small>
 							</div>
 
-							<div id="diff-container" class="" style="position: absolute; width: 100%; height: 94%; display: inline; padding-top: 0px;">
+							<div id="diff-container">
 								<!-- SVGS_GOES_HERE -->
 							</div>
 						</div>
@@ -161,7 +161,7 @@
 							</p>
 							<div class="row" style="height: 85%; width: 300px;">
 								<div class="col" style="height: 100%; width: 100%">
-									<div id="pages_list_div" class="form-check scrollbox" style="height: 100%; width: 100%; padding: 0px 0px 8px 0px; margin: 0px; overflow-y: scroll; max-height: 90vh;">
+									<div id="pages_list_div" class="form-check scrollbox" style="height: 100%; width: 100%; padding: 0px 0px 8px 0px; margin: 0px; overflow-y: scroll; max-height: 100%;">
 										<form id="pages_list_form" class="overflow-auto scrollbox-content">
 											<!-- FILL_PAGES_HERE -->
 										</form>
@@ -179,7 +179,7 @@
 							</p>
 							<div class="row" style="height: 85%; width: 300px;">
 								<div class="col" style="height: 100%; width: 100%">
-									<div id="layers_list_div" class="form-check scrollbox" style="height: 100%; width: 100%; padding: 0px 0px 8px 0px; margin: 0px; overflow-y: scroll; max-height: 90vh;">
+									<div id="layers_list_div" class="form-check scrollbox" style="height: 100%; width: 100%; padding: 0px 0px 8px 0px; margin: 0px; overflow-y: scroll; max-height: 100%;">
 										<form id="layers_list_form" class="overflow-auto scrollbox-content">
 											<!-- FILL_LAYERS_HERE -->
 										</form>
