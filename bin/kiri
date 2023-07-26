@@ -131,7 +131,7 @@ insert_commits_html() {
 	done
 
 	# get generated git graph
-	gitgraph_js=$(cat "$gitgraph_output_file")
+	# gitgraph_js=$(cat "$gitgraph_output_file")
 	# append a simulated click to select the first two commits
 	# gitgraph_js+="\ncommit_click_$commit_hash_1()\ncommit_click_$commit_hash_2()\n"
 	# append a function that provides a list of commits
@@ -140,7 +140,9 @@ insert_commits_html() {
 
 	# shellcheck disable=SC2086,SC2001
 	echo -e '<div id="commit_message"></div><div id="gitGraphContainer"></div>\n<script>\n' >"${OUTPUT_DIR_PATH}/commits.html"
-	commits_html="$(echo -e ${gitgraph_js} | sed "s|^|${indent}|g" | sed "s|@|-|g" | tee -a "${OUTPUT_DIR_PATH}/commits.html")"
+	sed -i "s/@/<at>/g" "$gitgraph_output_file"
+	cat "$gitgraph_output_file" >>"${OUTPUT_DIR_PATH}/commits.html"
+	#commits_html="$(echo -e ${gitgraph_js} | sed "s|^|${indent}|g" | sed "s|@|-|g" | tee -a "${OUTPUT_DIR_PATH}/commits.html")"
 	echo -e '\n</script>\n' >>"${OUTPUT_DIR_PATH}/commits.html"
 
 	line_no=$(($(grep -n "FILL_COMMITS_HERE" "${html_path}" | cut -d":" -f1) + 1))
