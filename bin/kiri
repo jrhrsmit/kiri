@@ -140,7 +140,7 @@ insert_commits_html() {
 
 	# shellcheck disable=SC2086,SC2001
 	echo -e '<div id="commit_message"></div><div id="gitGraphContainer"></div>\n<script>\n' >"${OUTPUT_DIR_PATH}/commits.html"
-	sed -i "s/@/<at>/g" "$gitgraph_output_file"
+	sed -i "s/@/[at]/g" "$gitgraph_output_file"
 	cat "$gitgraph_output_file" >>"${OUTPUT_DIR_PATH}/commits.html"
 	#commits_html="$(echo -e ${gitgraph_js} | sed "s|^|${indent}|g" | sed "s|@|-|g" | tee -a "${OUTPUT_DIR_PATH}/commits.html")"
 	echo -e '\n</script>\n' >>"${OUTPUT_DIR_PATH}/commits.html"

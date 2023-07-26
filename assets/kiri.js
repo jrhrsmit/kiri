@@ -83,7 +83,7 @@ function commit_click(hash) {
     update_commits()
 }
 
-var converter = new showdown.Converter();
+var converter = new showdown.Converter({simpleLineBreaks: true});
 function show_commit_details(text) {
     // convert plaintext to HTML
     console.log(`Commits text raw:\n${text}`)
