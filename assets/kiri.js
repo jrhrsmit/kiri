@@ -8,6 +8,8 @@ var commits_list = window.commit_array;
 var old_view;
 var current_view;
 
+model_opacity_slider = null;
+
 panZoom_instance = null;
 lastEventListener = null;
 lastEmbed = null;
@@ -83,7 +85,9 @@ function commit_click(hash) {
 
 function show_commit_details(text) {
     // convert plaintext to HTML
+    console.log(`Commits text:\n${text}`)
     text = text.replace(/(?:\r\n|\r|\n)/g, '<br>');
+    console.log(`Commits text:\n${text}`)
 
     // fill and display div
     var elem = document.getElementById('commit_message')
@@ -1286,6 +1290,11 @@ function createNewEmbed3d(src1, src2) {
 	    	src="${src2}" shadow-intensity="1" 
             disable-zoom
 	    	touch-action="pan-y"></model-viewer>
+        <div class="slidercontainer">
+            <p style="color: #f00">${commit2}</p>
+            <input type="range" min="0" max="100" value="50" class="" id="model-opacity-slider">
+            <p style="color: #0ff">${commit1}</p>
+        </div>
         `;
 
 
@@ -1293,11 +1302,23 @@ function createNewEmbed3d(src1, src2) {
     document.getElementById('div-svg').innerHTML = svg_element;
     console.log(">>> model-viewer: ", embed);
 
-    panZoom_instance.destroy();
-    panZoom_instance = null;
+    if (panZoom_instance) {
+        panZoom_instance.destroy();
+        panZoom_instance = null;
+    }
+
+    // Update the current slider value (each time you drag the slider handle)
+    model_opacity_slider = document.getElementById("model-opacity-slider");
+    model_opacity_slider.oninput = function () {
+        console.log(`diff-model-1 opacity: ${this.value}%`)
+        document.getElementById("diff-model-1").style.opacity = this.value / 100;
+    }
 
     return embed;
 }
+
+var output = document.getElementById("demo");
+
 
 function createNewEmbed(src1, src2) {
     console.log("createNewEmbed...");

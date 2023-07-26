@@ -1,9 +1,11 @@
-
-html, body {
-	height : 100%;
-	margin : 0px;
-	font-size : 1em; /* Normalize view on firefox */
-	line-height : 1.5em; /* Normalize view on firefox */
+html,
+body {
+	height: 100%;
+	margin: 0px;
+	font-size: 1em;
+	/* Normalize view on firefox */
+	line-height: 1.5em;
+	/* Normalize view on firefox */
 	caret-color: transparent;
 }
 
@@ -17,8 +19,9 @@ html, body {
 .no-gutters {
 	margin-right: 0px;
 	margin-left: 0px;
-	> .col,
-	> [class*="col-"] {
+
+	>.col,
+	>[class*="col-"] {
 		padding-right: 0px;
 		padding-left: 0px;
 	}
@@ -31,15 +34,15 @@ html, body {
 
 
 #commit_message {
-    width: auto;
-    height: auto;
-    border: 1px rgba(100, 100, 100, 0.7);
-    color: #fff;
-    padding: 5px;
-    margin: 20px;
-    border-radius: 5px;
-    position: fixed;
-    background-color: rgba(0, 0, 0, 0.7);
+	width: auto;
+	height: auto;
+	border: 1px rgba(100, 100, 100, 0.7);
+	color: #fff;
+	padding: 5px;
+	margin: 20px;
+	border-radius: 5px;
+	position: fixed;
+	background-color: rgba(0, 0, 0, 0.7);
 	z-index: 100;
 	display: none;
 }
@@ -52,7 +55,7 @@ html, body {
 	display: none;
 }
 
-.list-group input[type="checkbox"] + .list-group-item {
+.list-group input[type="checkbox"]+.list-group-item {
 	background-color: #222;
 	color: #dbdbdb;
 	font-family: monospace;
@@ -61,18 +64,18 @@ html, body {
 	border-radius: 5px;
 }
 
-.list-group input[type="checkbox"] + .list-group-item:before {
+.list-group input[type="checkbox"]+.list-group-item:before {
 	color: transparent;
 	font-weight: bold;
 }
 
-.list-group input[type="checkbox"]:checked + .list-group-item {
+.list-group input[type="checkbox"]:checked+.list-group-item {
 	background-color: #111;
 	color: #fff;
 	border-radius: 5px;
 }
 
-.list-group input[type="checkbox"]:checked + .list-group-item:before {
+.list-group input[type="checkbox"]:checked+.list-group-item:before {
 	color: inherit;
 }
 
@@ -114,12 +117,11 @@ html, body {
 	display: none;
 }
 
-.btn-group input[type="radio"] + .btn-group-item {
+.btn-group input[type="radio"]+.btn-group-item {
 	font-family: monospace;
 }
 
-.btn-group input[type="radio"] + .btn-group-item:before {
-}
+.btn-group input[type="radio"]+.btn-group-item:before {}
 
 /* ==============================
    Layers List
@@ -130,7 +132,7 @@ html, body {
 	display: none;
 }
 
-.list-group input[type="radio"] + .list-group-item {
+.list-group input[type="radio"]+.list-group-item {
 	background-color: #222222;
 	color: #dbdbdb;
 	font-family: monospace;
@@ -138,17 +140,17 @@ html, body {
 	margin: 4px;
 }
 
-.list-group input[type="radio"] + .list-group-item:before {
+.list-group input[type="radio"]+.list-group-item:before {
 	color: transparent;
 	font-weight: bold;
 }
 
-.list-group input[type="radio"]:checked + .list-group-item {
+.list-group input[type="radio"]:checked+.list-group-item {
 	background-color: #111111;
 	color: #FFF;
 }
 
-.list-group input[type="radio"]:checked + .list-group-item:before {
+.list-group input[type="radio"]:checked+.list-group-item:before {
 	color: inherit;
 }
 
@@ -170,10 +172,11 @@ html, body {
 	border-radius: 5px;
 }
 
-#diff-model-1, #diff-model-2 {
+#diff-model-1,
+#diff-model-2 {
 	/*border: 1px solid #111;*/
 	position: absolute;
-	margin-top: 15px;
+	margin-top: 65px;
 	width: 100%;
 	height: 100%;
 	background-color: #222;
@@ -184,10 +187,30 @@ html, body {
 	opacity: 0.5;
 	z-index: 11;
 }
+
 #diff-model-2 {
-	opacity: 0.5;
+	opacity: 1;
 	z-index: 10;
 	pointer-events: none;
+}
+
+div.slidercontainer {
+	height: 50px;
+	margin: 15px auto 15px auto;
+	width: 50%;
+}
+
+div.slidercontainer p {
+	font: normal 10pt monospace;
+	display: inline-block;
+	padding: 0 15px 0 15px;
+	margin: 0;
+	vertical-align: middle;
+}
+
+#model-opacity-slider {
+	display: inline-block;
+	vertical-align: middle;
 }
 
 
@@ -197,99 +220,99 @@ html, body {
 */
 
 .F_Cu {
-	filter : invert(28%) sepia(50%) saturate(2065%) hue-rotate(334deg) brightness(73%) contrast(97%);
+	filter: invert(28%) sepia(50%) saturate(2065%) hue-rotate(334deg) brightness(73%) contrast(97%);
 }
 
 .In1_Cu {
-	filter : invert(69%) sepia(39%) saturate(1246%) hue-rotate(17deg) brightness(97%) contrast(104%);
+	filter: invert(69%) sepia(39%) saturate(1246%) hue-rotate(17deg) brightness(97%) contrast(104%);
 }
 
 .In2_Cu {
-	filter : invert(14%) sepia(79%) saturate(5231%) hue-rotate(293deg) brightness(91%) contrast(119%);
+	filter: invert(14%) sepia(79%) saturate(5231%) hue-rotate(293deg) brightness(91%) contrast(119%);
 }
 
 .In3_Cu {
-	filter : invert(14%) sepia(79%) saturate(5231%) hue-rotate(293deg) brightness(91%) contrast(119%);
+	filter: invert(14%) sepia(79%) saturate(5231%) hue-rotate(293deg) brightness(91%) contrast(119%);
 }
 
 .In4_Cu {
-	filter : invert(14%) sepia(79%) saturate(5231%) hue-rotate(293deg) brightness(91%) contrast(119%);
+	filter: invert(14%) sepia(79%) saturate(5231%) hue-rotate(293deg) brightness(91%) contrast(119%);
 }
 
 .B_Cu {
-	filter : invert(44%) sepia(14%) saturate(2359%) hue-rotate(70deg) brightness(103%) contrast(82%);
+	filter: invert(44%) sepia(14%) saturate(2359%) hue-rotate(70deg) brightness(103%) contrast(82%);
 }
 
 .F_Mask {
-	filter : invert(27%) sepia(51%) saturate(1920%) hue-rotate(269deg) brightness(89%) contrast(96%);
+	filter: invert(27%) sepia(51%) saturate(1920%) hue-rotate(269deg) brightness(89%) contrast(96%);
 }
 
 .B_Mask {
-	filter : invert(22%) sepia(56%) saturate(2652%) hue-rotate(277deg) brightness(94%) contrast(87%);
+	filter: invert(22%) sepia(56%) saturate(2652%) hue-rotate(277deg) brightness(94%) contrast(87%);
 }
 
 .F_Paste {
-	filter : invert(57%) sepia(60%) saturate(6%) hue-rotate(314deg) brightness(92%) contrast(99%);
+	filter: invert(57%) sepia(60%) saturate(6%) hue-rotate(314deg) brightness(92%) contrast(99%);
 }
 
 .B_Paste {
-	filter : invert(91%) sepia(47%) saturate(4033%) hue-rotate(139deg) brightness(82%) contrast(91%);
+	filter: invert(91%) sepia(47%) saturate(4033%) hue-rotate(139deg) brightness(82%) contrast(91%);
 }
 
 .F_SilkS {
-	filter : invert(46%) sepia(44%) saturate(587%) hue-rotate(132deg) brightness(101%) contrast(85%);
+	filter: invert(46%) sepia(44%) saturate(587%) hue-rotate(132deg) brightness(101%) contrast(85%);
 }
 
 .B_SilkS {
-	filter : invert(14%) sepia(27%) saturate(2741%) hue-rotate(264deg) brightness(95%) contrast(102%);
+	filter: invert(14%) sepia(27%) saturate(2741%) hue-rotate(264deg) brightness(95%) contrast(102%);
 }
 
 .Edge_Cuts {
-	filter : invert(79%) sepia(79%) saturate(401%) hue-rotate(6deg) brightness(88%) contrast(88%);
+	filter: invert(79%) sepia(79%) saturate(401%) hue-rotate(6deg) brightness(88%) contrast(88%);
 }
 
 .Margin {
-	filter : invert(74%) sepia(71%) saturate(5700%) hue-rotate(268deg) brightness(89%) contrast(84%);
+	filter: invert(74%) sepia(71%) saturate(5700%) hue-rotate(268deg) brightness(89%) contrast(84%);
 }
 
 .Dwgs_User {
-	filter : invert(40%) sepia(68%) saturate(7431%) hue-rotate(203deg) brightness(89%) contrast(98%);
+	filter: invert(40%) sepia(68%) saturate(7431%) hue-rotate(203deg) brightness(89%) contrast(98%);
 }
 
 .Cmts_User {
-	filter : invert(73%) sepia(10%) saturate(1901%) hue-rotate(171deg) brightness(95%) contrast(102%);
+	filter: invert(73%) sepia(10%) saturate(1901%) hue-rotate(171deg) brightness(95%) contrast(102%);
 }
 
 .Eco1_User {
-	filter : invert(25%) sepia(98%) saturate(2882%) hue-rotate(109deg) brightness(90%) contrast(104%);
+	filter: invert(25%) sepia(98%) saturate(2882%) hue-rotate(109deg) brightness(90%) contrast(104%);
 }
 
 .Eco2_User {
-	filter : invert(85%) sepia(21%) saturate(5099%) hue-rotate(12deg) brightness(91%) contrast(102%);
+	filter: invert(85%) sepia(21%) saturate(5099%) hue-rotate(12deg) brightness(91%) contrast(102%);
 }
 
 .F_Fab {
-	filter : invert(71%) sepia(21%) saturate(4662%) hue-rotate(21deg) brightness(103%) contrast(100%);
+	filter: invert(71%) sepia(21%) saturate(4662%) hue-rotate(21deg) brightness(103%) contrast(100%);
 }
 
 .B_Fab {
-	filter : invert(60%) sepia(0%) saturate(0%) hue-rotate(253deg) brightness(87%) contrast(90%);
+	filter: invert(60%) sepia(0%) saturate(0%) hue-rotate(253deg) brightness(87%) contrast(90%);
 }
 
 .F_Adhes {
-	filter : invert(38%) sepia(49%) saturate(1009%) hue-rotate(254deg) brightness(88%) contrast(86%);
+	filter: invert(38%) sepia(49%) saturate(1009%) hue-rotate(254deg) brightness(88%) contrast(86%);
 }
 
 .B_Adhes {
-	filter : invert(24%) sepia(48%) saturate(2586%) hue-rotate(218deg) brightness(88%) contrast(92%);
+	filter: invert(24%) sepia(48%) saturate(2586%) hue-rotate(218deg) brightness(88%) contrast(92%);
 }
 
 .F_CrtYd {
-	filter : invert(73%) sepia(1%) saturate(0%) hue-rotate(116deg) brightness(92%) contrast(91%);
+	filter: invert(73%) sepia(1%) saturate(0%) hue-rotate(116deg) brightness(92%) contrast(91%);
 }
 
 .B_CrtYd {
-	filter : invert(79%) sepia(92%) saturate(322%) hue-rotate(3deg) brightness(89%) contrast(92%);
+	filter: invert(79%) sepia(92%) saturate(322%) hue-rotate(3deg) brightness(89%) contrast(92%);
 }
 
 /* ==============================
@@ -302,7 +325,8 @@ html, body {
 	display: inline-block;
 }
 
-label#layers, label#pages {
+label#layers,
+label#pages {
 	margin-top: 0px;
 	margin-bottom: 4px;
 	white-space: nowrap;
@@ -310,7 +334,7 @@ label#layers, label#pages {
 	overflow: hidden;
 	text-overflow: ellipsis;
 	display: inline-block;
-	vertical-align:top;
+	vertical-align: top;
 }
 
 #server_offline {
@@ -322,7 +346,7 @@ label#layers, label#pages {
 	left: 0;
 	right: 0;
 	bottom: 0;
-	background-color: rgba(0,0,0,0.8);
+	background-color: rgba(0, 0, 0, 0.8);
 	z-index: 2;
 	cursor: pointer;
 }
@@ -349,6 +373,7 @@ a:active {
 #commit1_legend_hash {
 	color: #28a745;
 }
+
 #commit2_legend_hash {
 	color: #28a745;
 }
@@ -357,7 +382,11 @@ a:active {
 ** ============================*/
 
 .hidden_iframe {
-	position:absolute; top:-1px; left:-1px; width:1px; height:1px;
+	position: absolute;
+	top: -1px;
+	left: -1px;
+	width: 1px;
+	height: 1px;
 	display: none;
 }
 
@@ -368,7 +397,7 @@ a:active {
 }
 
 .modal-content {
-  background: #333;
+	background: #333;
 }
 
 hr {
